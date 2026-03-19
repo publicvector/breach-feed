@@ -1,0 +1,553 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Data Breach Alerts</title>
+        <link>https://www.ransomware.live</link>
+        <description>Automated feed of recent data breaches and ransomware attacks affecting 10,000+ people or involving sensitive data (SSN, health info, etc.)</description>
+        <language>en-us</language>
+        <lastBuildDate>Wed, 18 Mar 2026 14:18:00 GMT</lastBuildDate>
+        <atom:link href="file:///Users/luke/breach-monitor/breach-feed.xml" rel="self" type="application/rss+xml"/>
+        <generator>Breach Monitor v1.0</generator>
+
+    <item>
+        <title><![CDATA[Conrad Capital Management - Unknown]]></title>
+        <link>https://www.ransomware.live/id/Q29ucmFkIENhcGl0YWwgTWFuYWdlbWVudEBkcmFnb25mb3JjZQ==</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/Q29ucmFkIENhcGl0YWwgTWFuYWdlbWVudEBkcmFnb25mb3JjZQ==</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Conrad Capital Management<br/>
+<b>Location:</b> US<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Conrad Capital Management]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[loopcap.com - Unknown]]></title>
+        <link>https://www.ransomware.live/id/bG9vcGNhcC5jb21AY2hhb3M=</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/bG9vcGNhcC5jb21AY2hhb3M=</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> loopcap.com<br/>
+<b>Location:</b> US<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            loopcap.com]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Valley Family Health Care - Unknown]]></title>
+        <link>https://www.ransomware.live/id/VmFsbGV5IEZhbWlseSBIZWFsdGggQ2FyZUBpbnNvbW5pYQ==</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/VmFsbGV5IEZhbWlseSBIZWFsdGggQ2FyZUBpbnNvbW5pYQ==</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Valley Family Health Care<br/>
+<b>Location:</b> US<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Health Data<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Valley Family Health Care]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[BTX Global Logistics - Unknown]]></title>
+        <link>https://www.ransomware.live/id/QlRYIEdsb2JhbCBMb2dpc3RpY3NAcWlsaW4=</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/QlRYIEdsb2JhbCBMb2dpc3RpY3NAcWlsaW4=</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> BTX Global Logistics<br/>
+<b>Location:</b> US<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            BTX Global Logistics]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[hollu Systemhygiene - Unknown]]></title>
+        <link>https://www.ransomware.live/id/aG9sbHUgU3lzdGVtaHlnaWVuZUBxaWxpbg==</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/aG9sbHUgU3lzdGVtaHlnaWVuZUBxaWxpbg==</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> hollu Systemhygiene<br/>
+<b>Location:</b> AT<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            hollu Systemhygiene]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Arca Service - Unknown]]></title>
+        <link>https://www.ransomware.live/id/QXJjYSBTZXJ2aWNlQHFpbGlu</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/QXJjYSBTZXJ2aWNlQHFpbGlu</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Arca Service<br/>
+<b>Location:</b> IT<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Arca Service]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Rainbow Technology - Unknown]]></title>
+        <link>https://www.ransomware.live/id/UmFpbmJvdyBUZWNobm9sb2d5QGFraXJh</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/UmFpbmJvdyBUZWNobm9sb2d5QGFraXJh</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Rainbow Technology<br/>
+<b>Location:</b> Unknown<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Rainbow Technology]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Reflex Angelo - Unknown]]></title>
+        <link>https://www.ransomware.live/id/UmVmbGV4IEFuZ2Vsb0Bha2lyYQ==</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/UmVmbGV4IEFuZ2Vsb0Bha2lyYQ==</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Reflex Angelo<br/>
+<b>Location:</b> IT<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Reflex Angelo]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Elite Flower - Unknown]]></title>
+        <link>https://www.ransomware.live/id/RWxpdGUgRmxvd2VyQHFpbGlu</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/RWxpdGUgRmxvd2VyQHFpbGlu</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Elite Flower<br/>
+<b>Location:</b> US<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Elite Flower]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Jacobs & Sons - Unknown]]></title>
+        <link>https://www.ransomware.live/id/SmFjb2JzICYgU29uc0BxaWxpbg==</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/SmFjb2JzICYgU29uc0BxaWxpbg==</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Jacobs & Sons<br/>
+<b>Location:</b> Unknown<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Jacobs & Sons]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Sievert Electric Service and Sales - Unknown]]></title>
+        <link>https://www.ransomware.live/id/U2lldmVydCBFbGVjdHJpYyBTZXJ2aWNlIGFuZCBTYWxlc0BxaWxpbg==</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/U2lldmVydCBFbGVjdHJpYyBTZXJ2aWNlIGFuZCBTYWxlc0BxaWxpbg==</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Sievert Electric Service and Sales<br/>
+<b>Location:</b> US<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Sievert Electric Service and Sales]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Productos La Aguadillana - Unknown]]></title>
+        <link>https://www.ransomware.live/id/UHJvZHVjdG9zIExhIEFndWFkaWxsYW5hQHFpbGlu</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/UHJvZHVjdG9zIExhIEFndWFkaWxsYW5hQHFpbGlu</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Productos La Aguadillana<br/>
+<b>Location:</b> PR<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Productos La Aguadillana]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[L H Lacy - Unknown]]></title>
+        <link>https://www.ransomware.live/id/TCBIIExhY3lAcWlsaW4=</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/TCBIIExhY3lAcWlsaW4=</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> L H Lacy<br/>
+<b>Location:</b> Unknown<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            L H Lacy]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Affinity Designs - Unknown]]></title>
+        <link>https://www.ransomware.live/id/QWZmaW5pdHkgRGVzaWduc0BxaWxpbg==</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/QWZmaW5pdHkgRGVzaWduc0BxaWxpbg==</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Affinity Designs<br/>
+<b>Location:</b> Unknown<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Affinity Designs]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Texollini - Unknown]]></title>
+        <link>https://www.ransomware.live/id/VGV4b2xsaW5pQGFraXJh</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/VGV4b2xsaW5pQGFraXJh</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Texollini<br/>
+<b>Location:</b> US<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Texollini]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Pyrénées - Unknown]]></title>
+        <link>https://www.ransomware.live/id/UHlyw6luw6llc0Bha2lyYQ==</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/UHlyw6luw6llc0Bha2lyYQ==</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Pyrénées<br/>
+<b>Location:</b> AD<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Pyrénées]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Vexin Normand - Unknown]]></title>
+        <link>https://www.ransomware.live/id/VmV4aW4gTm9ybWFuZEB0aGVnZW50bGVtZW4=</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/VmV4aW4gTm9ybWFuZEB0aGVnZW50bGVtZW4=</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Vexin Normand<br/>
+<b>Location:</b> FR<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Vexin Normand]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[GPAINNOVA - Unknown]]></title>
+        <link>https://www.ransomware.live/id/R1BBSU5OT1ZBQHRoZWdlbnRsZW1lbg==</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/R1BBSU5OT1ZBQHRoZWdlbnRsZW1lbg==</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> GPAINNOVA<br/>
+<b>Location:</b> ES<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            GPAINNOVA]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Excellentiam - Unknown]]></title>
+        <link>https://www.ransomware.live/id/RXhjZWxsZW50aWFtQHRoZWdlbnRsZW1lbg==</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/RXhjZWxsZW50aWFtQHRoZWdlbnRsZW1lbg==</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Excellentiam<br/>
+<b>Location:</b> Unknown<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Excellentiam]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Economia - Unknown]]></title>
+        <link>https://www.ransomware.live/id/RWNvbm9taWFAdGhlZ2VudGxlbWVu</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/RWNvbm9taWFAdGhlZ2VudGxlbWVu</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Economia<br/>
+<b>Location:</b> CZ<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Economia]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Martyr Ali Larijani - Unknown]]></title>
+        <link>https://www.ransomware.live/id/TWFydHlyIEFsaSBMYXJpamFuaUBoYW5kYWxh</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/TWFydHlyIEFsaSBMYXJpamFuaUBoYW5kYWxh</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Martyr Ali Larijani<br/>
+<b>Location:</b> Unknown<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Martyr Ali Larijani]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Summa Energy - Unknown]]></title>
+        <link>https://www.ransomware.live/id/U3VtbWEgRW5lcmd5QHNpbm9iaQ==</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/U3VtbWEgRW5lcmd5QHNpbm9iaQ==</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Summa Energy<br/>
+<b>Location:</b> US<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Summa Energy]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Interpack Northwest - Unknown]]></title>
+        <link>https://www.ransomware.live/id/SW50ZXJwYWNrIE5vcnRod2VzdEBzaW5vYmk=</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/SW50ZXJwYWNrIE5vcnRod2VzdEBzaW5vYmk=</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Interpack Northwest<br/>
+<b>Location:</b> Unknown<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Interpack Northwest]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Wood Smith Henning & Berman LLP - Unknown]]></title>
+        <link>https://www.ransomware.live/id/V29vZCBTbWl0aCBIZW5uaW5nICYgQmVybWFuIExMUEBTaWxlbnRSYW5zb21Hcm91cA==</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/V29vZCBTbWl0aCBIZW5uaW5nICYgQmVybWFuIExMUEBTaWxlbnRSYW5zb21Hcm91cA==</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Wood Smith Henning & Berman LLP<br/>
+<b>Location:</b> US<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Wood Smith Henning & Berman LLP]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[Fannin CAD - Unknown]]></title>
+        <link>https://www.ransomware.live/id/RmFubmluIENBREBleGl0aXVt</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/RmFubmluIENBREBleGl0aXVt</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> Fannin CAD<br/>
+<b>Location:</b> US<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            Fannin CAD]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[palram.com - Unknown]]></title>
+        <link>https://www.ransomware.live/id/cGFscmFtLmNvbUBraWxsc2Vj</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/cGFscmFtLmNvbUBraWxsc2Vj</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> palram.com<br/>
+<b>Location:</b> IL<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            palram.com]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[***** ***** & ****** - Unknown]]></title>
+        <link>https://www.ransomware.live/id/KioqKiogKioqKiogJiAqKioqKipAZ2VuZXNpcw==</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/KioqKiogKioqKiogJiAqKioqKipAZ2VuZXNpcw==</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> ***** ***** & ******<br/>
+<b>Location:</b> US<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            ***** ***** & ******]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[brookercg.com - Unknown]]></title>
+        <link>https://www.ransomware.live/id/YnJvb2tlcmNnLmNvbUBzYWZlcGF5</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/YnJvb2tlcmNnLmNvbUBzYWZlcGF5</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> brookercg.com<br/>
+<b>Location:</b> US<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            brookercg.com]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[tiefenbachergroup.com - Unknown]]></title>
+        <link>https://www.ransomware.live/id/dGllZmVuYmFjaGVyZ3JvdXAuY29tQHNhZmVwYXk=</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/dGllZmVuYmFjaGVyZ3JvdXAuY29tQHNhZmVwYXk=</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> tiefenbachergroup.com<br/>
+<b>Location:</b> DE<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            tiefenbachergroup.com]]></description>
+    </item>
+
+    <item>
+        <title><![CDATA[briwaycarriers.com - Unknown]]></title>
+        <link>https://www.ransomware.live/id/YnJpd2F5Y2FycmllcnMuY29tQHNhZmVwYXk=</link>
+        <guid isPermaLink="true">https://www.ransomware.live/id/YnJpd2F5Y2FycmllcnMuY29tQHNhZmVwYXk=</guid>
+        <pubDate>Wed, 18 Mar 2026 00:00:00 GMT</pubDate>
+        <description><![CDATA[<b>Company:</b> briwaycarriers.com<br/>
+<b>Location:</b> CA<br/>
+<b>Victims:</b> Unknown<br/>
+<b>Data at Risk:</b> Data exfiltrated<br/>
+<b>Attack Date:</b> 2026-03-18<br/>
+<b>Ransomware Group:</b> Unknown<br/>
+<b>Source:</b> ransomware.live<br/>
+<br/>
+<b>Description:</b> 
+
+            briwaycarriers.com]]></description>
+    </item>
+
+    </channel>
+</rss>
