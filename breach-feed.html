@@ -2,219 +2,432 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Data Breach Alerts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚨 Data Breach Alerts</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 40px; background: #f5f5f5; }
-        h1 { color: #333; }
-        .meta { color: #666; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #f8f8f8; font-weight: 600; font-size: 12px; }
-        td { font-size: 12px; }
-        tr:hover { background: #fafafa; }
-        a { color: #0066cc; text-decoration: none; }
-        a:hover { text-decoration: underline; }
-        .sensitive-health { background: #fff0f0; }
-        .sensitive-id { background: #fff8e0; }
-        .high-volume { background: #f0f0ff; }
-        .legend { margin-top: 20px; font-size: 14px; color: #666; }
-        .legend span { display: inline-block; padding: 2px 8px; margin-right: 10px; border-radius: 3px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e4e4e7;
+            padding: 40px 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff6b6b, #ffa502);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .subtitle {
+            color: #9ca3af;
+            font-size: 1rem;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+        .stat {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 15px 25px;
+            text-align: center;
+        }
+        .stat-value { font-size: 1.8rem; font-weight: bold; color: #fff; }
+        .stat-label { font-size: 0.85rem; color: #9ca3af; }
+        
+        .date-group {
+            margin-bottom: 35px;
+        }
+        .date-header {
+            font-size: 1.1rem;
+            color: #9ca3af;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .breach-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .breach-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 18px 20px;
+            transition: all 0.2s ease;
+        }
+        .breach-card:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.15);
+            transform: translateX(4px);
+        }
+        
+        .breach-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .company-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+        }
+        .company-name:hover {
+            color: #60a5fa;
+            text-decoration: underline;
+        }
+        
+        .badge {
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .badge-default { background: rgba(255,255,255,0.1); color: #9ca3af; }
+        .badge-health { background: rgba(239,68,68,0.2); color: #fca5a5; }
+        .badge-financial { background: rgba(59,130,246,0.2); color: #93c5fd; }
+        .badge-gov { background: rgba(168,85,247,0.2); color: #d8b4fe; }
+        
+        .breach-details {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+        }
+        .detail { color: #9ca3af; }
+        .detail .label { color: #6b7280; }
+        
+        .company-desc {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-style: italic;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #4b5563;
+            font-size: 0.85rem;
+        }
+        footer a { color: #60a5fa; text-decoration: none; }
     </style>
 </head>
 <body>
-    <h1>🚨 Data Breach Alerts</h1>
-    <div class="meta">
-        Last updated: 2026-03-19 09:20:28<br>
-        Sources: ransomware.live, breachsense, hipaajournal
-    </div>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>Company</th>
-                <th>Industry</th>
-                <th>Location</th>
-                <th>Victims</th>
-                <th>Data at Risk</th>
-                <th>Date</th>
-                <th>Attacker</th>
-                <th>Company Info</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="container">
+        <header>
+            <h1>🚨 Data Breach Alerts</h1>
+            <p class="subtitle">Automated monitoring of ransomware attacks & data breaches</p>
+        </header>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value">20</div>
+                <div class="stat-label">Breaches Found</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">1</div>
+                <div class="stat-label">🏥 Healthcare</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">0</div>
+                <div class="stat-label">🏦 Financial</div>
+            </div>
+        </div>
+        
+        
+        <div class="date-group">
+            <h3 class="date-header">2026-03-19</h3>
+            <div class="breach-list">
+                
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/Qm9uaGV1cmVAc3BhY2ViZWFycw==" target="_blank" class="company-name">Bonheure</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Spacebears</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
 
-        <tr class="">
-            <td><a href="https://www.ransomware.live/id/UEMgU09GVCBGUkFOQ0VAY29pbmJhc2VjYXJ0ZWw=" target="_blank">PC SOFT FRANCE</a></td>
-            <td>—</td>
-            <td>Unknown</td>
-            <td>—</td>
-            <td>Data exfiltrated</td>
-            <td>2026-03-19</td>
-            <td>Coinbasecartel</td>
-            <td></td>
-        </tr>
+            </div>
+        </div>
 
-        <tr class="">
-            <td><a href="https://www.ransomware.live/id/dGllZmVuYmFjaGVyZ3JvdXAuY29tQHNhZmVwYXk=" target="_blank">tiefenbachergroup.com</a></td>
-            <td>—</td>
-            <td>Unknown</td>
-            <td>—</td>
-            <td>Data exfiltrated</td>
-            <td>2026-03-17</td>
-            <td>Safepay</td>
-            <td></td>
-        </tr>
+        <div class="date-group">
+            <h3 class="date-header">2026-03-18</h3>
+            <div class="breach-list">
+                
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/VmV4aW4gTm9ybWFuZEB0aGVnZW50bGVtZW4=" target="_blank" class="company-name">Vexin Normand</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Thegentlemen</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                <div class="company-desc">Former French county</div>
+            </div>
 
-        <tr class="">
-            <td><a href="https://www.ransomware.live/id/Q29uc3RydWN0aW9uIEVxdWlwbWVudCBQYXJ0c0BkcmFnb25mb3JjZQ==" target="_blank">Construction Equipment Parts</a></td>
-            <td>Manufacturing</td>
-            <td>Unknown</td>
-            <td>—</td>
-            <td>Data exfiltrated</td>
-            <td>2026-03-18</td>
-            <td>Dragonforce</td>
-            <td>[Manufacturing]</td>
-        </tr>
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/QlRYIEdsb2JhbCBMb2dpc3RpY3NAcWlsaW4=" target="_blank" class="company-name">BTX Global Logistics</a>
+                    <span class="badge badge-default">✈️ Transportation</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Qilin</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
 
-        <tr class="">
-            <td><a href="https://www.ransomware.live/id/U2hvY2sgZm9yIElzcmFlbGkgSW50ZWxsaWdlbmNlOiAxMDAsMDAwIENsYXNzaWZpZWQgRW1haWxzIG9mIE1vc3NhZOKAmXMgRXgtRGVwdXR5IERpcmVjdG9yIFMuLi5AaGFuZGFsYQ==" target="_blank">Shock for Israeli Intelligence: 100,000 Classified Emails of Mossad’s Ex-Deputy Director S...</a></td>
-            <td>—</td>
-            <td>Unknown</td>
-            <td>—</td>
-            <td>Data exfiltrated</td>
-            <td>2026-03-16</td>
-            <td>Handala</td>
-            <td></td>
-        </tr>
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/MkxHIFByb2RAdGhlZ2VudGxlbWVu" target="_blank" class="company-name">2LG Prod</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Thegentlemen</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
 
-        <tr class="">
-            <td><a href="https://www.ransomware.live/id/Q2VudHJvIGRlIEVzcGVjaWFsaWRhZGVzQHRoZWdlbnRsZW1lbg==" target="_blank">Centro de Especialidades</a></td>
-            <td>—</td>
-            <td>Unknown</td>
-            <td>—</td>
-            <td>Data exfiltrated</td>
-            <td>2026-03-16</td>
-            <td>Thegentlemen</td>
-            <td></td>
-        </tr>
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/Z2FzdGVpZ2VyLmRlc2lnbkBkcmFnb25mb3JjZQ==" target="_blank" class="company-name">gasteiger.design</a>
+                    <span class="badge badge-default">⚡ Energy</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Dragonforce</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
 
-        <tr class="">
-            <td><a href="https://www.ransomware.live/id/KioqKiogKioqKiogJiAqKioqKipAZ2VuZXNpcw==" target="_blank">***** ***** & ******</a></td>
-            <td>—</td>
-            <td>Unknown</td>
-            <td>—</td>
-            <td>Data exfiltrated</td>
-            <td>2026-03-17</td>
-            <td>Genesis</td>
-            <td></td>
-        </tr>
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/U3VtbWEgRW5lcmd5QHNpbm9iaQ==" target="_blank" class="company-name">Summa Energy</a>
+                    <span class="badge badge-default">⚡ Energy</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Sinobi</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
 
-        <tr class="">
-            <td><a href="https://www.ransomware.live/id/RXhlY3V0aXZlIEF2aWF0aW9uQHBsYXk=" target="_blank">Executive Aviation</a></td>
-            <td>Transportation</td>
-            <td>Unknown</td>
-            <td>—</td>
-            <td>Data exfiltrated</td>
-            <td>2026-03-15</td>
-            <td>Play</td>
-            <td>[Transportation]</td>
-        </tr>
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/VGV4b2xsaW5pQGFraXJh" target="_blank" class="company-name">Texollini</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Akira</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
 
-        <tr class="">
-            <td><a href="https://www.ransomware.live/id/U29sdXRpb25zIEV4dHJlbWUgVGVjaG5vbG9neUBBaUxvY2s=" target="_blank">Solutions Extreme Technology</a></td>
-            <td>Technology</td>
-            <td>Unknown</td>
-            <td>—</td>
-            <td>Data exfiltrated</td>
-            <td>2026-03-17</td>
-            <td>Ailock</td>
-            <td>[Technology]</td>
-        </tr>
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/RXhjZWxsZW50aWFtQHRoZWdlbnRsZW1lbg==" target="_blank" class="company-name">Excellentiam</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Thegentlemen</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
 
-        <tr class="">
-            <td><a href="https://www.ransomware.live/id/QXVyYSBHcm91cCwgSW5jLiAoYXVyYS5jb20pQHNoaW55aHVudGVycw==" target="_blank">Aura Group, Inc. (aura.com)</a></td>
-            <td>—</td>
-            <td>Unknown</td>
-            <td>—</td>
-            <td>Data exfiltrated</td>
-            <td>2026-03-15</td>
-            <td>Shinyhunters</td>
-            <td></td>
-        </tr>
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/VmFsbGV5IEZhbWlseSBIZWFsdGggQ2FyZUBpbnNvbW5pYQ==" target="_blank" class="company-name">Valley Family Health Care</a>
+                    <span class="badge badge-health">🏥 Healthcare</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Insomnia</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
 
-        <tr class="">
-            <td><a href="https://www.ransomware.live/id/Q2VyaW9AdGhlZ2VudGxlbWVu" target="_blank">Cerio</a></td>
-            <td>—</td>
-            <td>Unknown</td>
-            <td>—</td>
-            <td>Data exfiltrated</td>
-            <td>2026-03-19</td>
-            <td>Thegentlemen</td>
-            <td>Hamlet in Álava</td>
-        </tr>
+            </div>
+        </div>
 
-        <tr class="">
-            <td><a href="https://www.ransomware.live/id/U3RyeWtlciBIaXQgYnkgVW5wcmVjZWRlbnRlZCAxMi1QZXRhYnl0ZSBEYXRhIFdpcGVAaGFuZGFsYQ==" target="_blank">Stryker Hit by Unprecedented 12-Petabyte Data Wipe</a></td>
-            <td>Technology</td>
-            <td>Unknown</td>
-            <td>—</td>
-            <td>Data exfiltrated</td>
-            <td>2026-03-16</td>
-            <td>Handala</td>
-            <td>[Technology]</td>
-        </tr>
+        <div class="date-group">
+            <h3 class="date-header">2026-03-17</h3>
+            <div class="breach-list">
+                
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/R3NvbHV0aW9uekBwbGF5" target="_blank" class="company-name">Gsolutionz</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Play</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
 
-        <tr class="">
-            <td><a href="https://www.ransomware.live/id/YnJpd2F5Y2FycmllcnMuY29tQHNhZmVwYXk=" target="_blank">briwaycarriers.com</a></td>
-            <td>—</td>
-            <td>Unknown</td>
-            <td>—</td>
-            <td>Data exfiltrated</td>
-            <td>2026-03-17</td>
-            <td>Safepay</td>
-            <td></td>
-        </tr>
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/YmVzdGdyYXBoaWNzLm5ldEBkcmFnb25mb3JjZQ==" target="_blank" class="company-name">bestgraphics.net</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Dragonforce</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
 
-        <tr class="">
-            <td><a href="https://www.ransomware.live/id/U2FsYWdAcWlsaW4=" target="_blank">Salag</a></td>
-            <td>—</td>
-            <td>Unknown</td>
-            <td>—</td>
-            <td>Data exfiltrated</td>
-            <td>2026-03-15</td>
-            <td>Qilin</td>
-            <td></td>
-        </tr>
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/V2hvIGlzIFZhaGlkT25saW5lP0BoYW5kYWxh" target="_blank" class="company-name">Who is VahidOnline?</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Handala</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
 
-        <tr class="">
-            <td><a href="https://www.ransomware.live/id/VGF4ICYgQWNjb3VudGluZyBQbHVzQGFraXJh" target="_blank">Tax & Accounting Plus</a></td>
-            <td>—</td>
-            <td>Unknown</td>
-            <td>—</td>
-            <td>Data exfiltrated</td>
-            <td>2026-03-16</td>
-            <td>Akira</td>
-            <td></td>
-        </tr>
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/VmFoaWQgT2ZmbGluZSBNZW1iZXJzQGhhbmRhbGE=" target="_blank" class="company-name">Vahid Offline Members</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Handala</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
 
-        <tr class="">
-            <td><a href="https://www.ransomware.live/id/Z2FzdGVpZ2VyLmRlc2lnbkBkcmFnb25mb3JjZQ==" target="_blank">gasteiger.design</a></td>
-            <td>Energy</td>
-            <td>Unknown</td>
-            <td>—</td>
-            <td>Data exfiltrated</td>
-            <td>2026-03-18</td>
-            <td>Dragonforce</td>
-            <td>[Energy]</td>
-        </tr>
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/KioqKiogKioqKiogJiAqKioqKipAZ2VuZXNpcw==" target="_blank" class="company-name">***** ***** & ******</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Genesis</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
 
-        </tbody>
-    </table>
-    
-    <div class="legend">
-        <span style="background:#fff0f0">Healthcare/PHI</span>
-        <span style="background:#fff8e0">ID Docs</span>
-        <span style="background:#f0f0ff">100k+ Victims</span>
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/cGFscmFtLmNvbUBraWxsc2Vj" target="_blank" class="company-name">palram.com</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Killsec</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
+
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/U2h3YXBub0BxaWxpbg==" target="_blank" class="company-name">Shwapno</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Qilin</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                <div class="company-desc">Retail supermarket chain in Bangladesh</div>
+            </div>
+
+            </div>
+        </div>
+
+        <div class="date-group">
+            <h3 class="date-header">2026-03-16</h3>
+            <div class="breach-list">
+                
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/Vm9uIFdlaXNlIEFzc29jaWF0ZXNAcWlsaW4=" target="_blank" class="company-name">Von Weise Associates</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Qilin</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
+
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/U2hvY2sgZm9yIElzcmFlbGkgSW50ZWxsaWdlbmNlOiAxMDAsMDAwIENsYXNzaWZpZWQgRW1haWxzIG9mIE1vc3NhZOKAmXMgRXgtRGVwdXR5IERpcmVjdG9yIFMuLi5AaGFuZGFsYQ==" target="_blank" class="company-name">Shock for Israeli Intelligence: 100,000 Classified Emails of Mossad’s Ex-Deputy Director S...</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Handala</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
+
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/TWluZ2F0IExvY2F0aW9uQGFraXJh" target="_blank" class="company-name">Mingat Location</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Akira</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
+
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="https://www.ransomware.live/id/Q2hhc2UgQXNpYUB0aGVnZW50bGVtZW4=" target="_blank" class="company-name">Chase Asia</a>
+                    <span class="badge">—</span>
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> Thegentlemen</span>
+                    <span class="detail"><span class="label">Location:</span> 🌍</span>
+                </div>
+                
+            </div>
+
+            </div>
+        </div>
+
+        
+        <footer>
+            <p>Sources: ransomware.live | Updated: 2026-03-19 09:53</p>
+            <p><a href="https://www.ransomware.live" target="_blank">View Source</a></p>
+        </footer>
     </div>
 </body>
 </html>

@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """
-Breach Monitor - Multi-source breach monitoring with company enrichment
-Sources: ransomware.live, breachsense, hipaajournal
-Company info: Wikipedia + search
+Breach Monitor - Clean, readable output
 """
 
 import os
@@ -19,15 +17,6 @@ warnings.filterwarnings('ignore')
 OUTPUT_DIR = os.path.expanduser("~/breach-monitor")
 JSON_PATH = os.path.join(OUTPUT_DIR, "breach-feed.json")
 HTML_PATH = os.path.join(OUTPUT_DIR, "breach-feed.html")
-
-MIN_VICTIMS = 10000
-
-SENSITIVE_DATA_KEYWORDS = [
-    "ssn", "social security", "passport", "driver license", "credit card",
-    "bank account", "financial", "health", "medical", "phi", "patient",
-    "insurance", "medicare", "dob", "date of birth", "email", "password",
-    "credentials", "tax id", "ein"
-]
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
@@ -50,24 +39,20 @@ class BreachReport:
 
 
 def search_company_info(company_name: str) -> dict:
-    """Get company info from Wikipedia and guess from name"""
     info = {"description": "", "industry": ""}
-    
-    # First, try to guess industry from company name
     name_lower = company_name.lower()
     
-    # Industry keywords in company name
     industry_patterns = {
-        "Healthcare": ["hospital", "health", "medical", "clinic", "pharma", "pharmacy", "dental", "care", "clinical", "diagnostic"],
-        "Financial Services": ["bank", "financial", "insurance", "credit", "capital", "investment", "trust", "securities", "loan"],
-        "Technology": ["tech", "software", "systems", "digital", "data", "cloud", "cyber", "it ", " solutions"],
-        "Government": ["government", "municipal", "city", "county", "state", "federal", "court", "cad", "assessment"],
-        "Education": ["school", "university", "college", "academy", "education", "training"],
-        "Manufacturing": ["manufacturing", "industrial", "metal", "steel", "chemical", "plastics", "equipment", "parts"],
-        "Retail": ["retail", "store", "shop", "market", "distribution", "wholesale"],
-        "Transportation": ["transport", "logistics", "shipping", "trucking", "airline", "aviation", "freight"],
-        "Energy": ["energy", "electric", "power", "gas", "oil", "solar", "renewable"],
-        "Construction": ["construction", "building", "contractor", "architecture", "engineering", "real estate"]
+        "🏥 Healthcare": ["hospital", "health", "medical", "clinic", "pharma", "pharmacy", "dental", "care", "clinical"],
+        "🏦 Financial": ["bank", "financial", "insurance", "credit", "capital", "investment", "trust", "securities"],
+        "💻 Technology": ["tech", "software", "systems", "digital", "data", "cloud", "cyber"],
+        "🏛️ Government": ["government", "municipal", "city", "county", "state", "federal", "court", "cad"],
+        "🎓 Education": ["school", "university", "college", "academy", "education"],
+        "🏭 Manufacturing": ["manufacturing", "industrial", "metal", "steel", "chemical", "equipment", "parts"],
+        "🏪 Retail": ["retail", "store", "shop", "market", "distribution"],
+        "✈️ Transportation": ["transport", "logistics", "shipping", "trucking", "airline", "aviation", "freight"],
+        "⚡ Energy": ["energy", "electric", "power", "gas", "oil", "solar"],
+        "🏗️ Construction": ["construction", "building", "contractor", "architecture", "engineering", "real estate"]
     }
     
     for industry, patterns in industry_patterns.items():
@@ -75,11 +60,9 @@ def search_company_info(company_name: str) -> dict:
             info["industry"] = industry
             break
     
-    # Try Wikipedia API
     try:
-        # Clean company name for Wikipedia
-        wiki_name = company_name.split('@')[0].strip()  # Remove @group
-        wiki_name = re.sub(r'\.com|\.org|\.net|\.io|\.co$', '', wiki_name)  # Remove TLD
+        wiki_name = company_name.split('@')[0].strip()
+        wiki_name = re.sub(r'\.com|\.org|\.net|\.io|\.co$', '', wiki_name)
         wiki_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{requests.utils.quote(wiki_name)}"
         resp = requests.get(wiki_url, headers=HEADERS, timeout=10)
         if resp.status_code == 200:
@@ -87,12 +70,6 @@ def search_company_info(company_name: str) -> dict:
             desc = data.get("description", "") or data.get("extract", "")[:200]
             if desc and "may refer to" not in desc and "Topics referred" not in desc:
                 info["description"] = desc
-                # Override industry if Wikipedia gives better info
-                desc_lower = desc.lower()
-                for industry, patterns in industry_patterns.items():
-                    if any(p in desc_lower for p in patterns):
-                        info["industry"] = industry
-                        break
     except:
         pass
     
@@ -100,24 +77,20 @@ def search_company_info(company_name: str) -> dict:
 
 
 def get_victim_details(url: str) -> dict:
-    """Fetch detailed info from a victim's page"""
     try:
         clean_url = url.split('#')[0]
         resp = requests.get(clean_url, headers=HEADERS, timeout=30)
-        resp.raise_for_status()
         soup = BeautifulSoup(resp.text, 'html.parser')
-        
-        details = {}
         text = soup.get_text()
         
-        # Extract victim count
-        for pattern in [r'(\d[\d,]*)\s*victims?', r'(\d[\d,]*)\s*records? leaked']:
+        details = {}
+        
+        for pattern in [r'(\d[\d,]*)\s*victims?', r'(\d[\d,]*)\s*records?']:
             match = re.search(pattern, text, re.I)
             if match:
                 details['victims'] = match.group(1)
                 break
         
-        # Extract ransomware group
         for link in soup.find_all('a', href=True):
             if '/group/' in link.get('href', ''):
                 group = link.get_text(strip=True)
@@ -125,7 +98,6 @@ def get_victim_details(url: str) -> dict:
                     details['ransomware_group'] = group
                     break
         
-        # Extract country
         for link in soup.find_all('a', href=True):
             if '/map/' in link.get('href', ''):
                 country = link.get_text(strip=True)
@@ -133,7 +105,6 @@ def get_victim_details(url: str) -> dict:
                     details['location'] = country
                     break
         
-        # Extract dates
         dates = re.findall(r'(\d{4}-\d{2}-\d{2})', text)
         if dates:
             details['attack_date'] = dates[0]
@@ -144,7 +115,6 @@ def get_victim_details(url: str) -> dict:
 
 
 def get_ransomware_live_victims(days_back: int = 3) -> list[BreachReport]:
-    """Scrape ransomware.live"""
     victims = []
     seen_urls = set()
     
@@ -154,7 +124,6 @@ def get_ransomware_live_victims(days_back: int = 3) -> list[BreachReport]:
         soup = BeautifulSoup(resp.text, 'html.parser')
         cutoff_date = (datetime.now() - timedelta(days=days_back)).date()
         
-        # Get victim URLs
         for link in soup.find_all('a', href=True):
             if '/id/' in link.get('href', ''):
                 clean = link.get('href', '').split('#')[0]
@@ -162,12 +131,9 @@ def get_ransomware_live_victims(days_back: int = 3) -> list[BreachReport]:
                 if full_url not in seen_urls:
                     seen_urls.add(full_url)
         
-        print(f"    Found {len(seen_urls)} victims, fetching details...")
+        print(f"    Found {len(seen_urls)} victims")
         
-        for i, victim_url in enumerate(list(seen_urls)[:15]):
-            print(f"    [{i+1}/15] Processing...")
-            
-            # Decode company name
+        for i, victim_url in enumerate(list(seen_urls)[:20]):
             try:
                 import base64
                 encoded = victim_url.split('/id/')[-1]
@@ -180,21 +146,15 @@ def get_ransomware_live_victims(days_back: int = 3) -> list[BreachReport]:
                 company_name = "Unknown"
             
             details = get_victim_details(victim_url)
-            
-            # Get company info
             company_info = search_company_info(company_name)
-            
-            # Sensitive data check
-            desc_text = company_info.get("description", "")
-            data_at_risk = extract_sensitive_data(desc_text)
             
             attack_date = details.get('attack_date', datetime.now().strftime('%Y-%m-%d'))
             
             victims.append(BreachReport(
                 company_name=company_name,
-                location=details.get('location', 'Unknown'),
-                victims=details.get('victims', 'Unknown'),
-                data_at_risk=data_at_risk if data_at_risk else "Data exfiltrated",
+                location=details.get('location', '🌍'),
+                victims=details.get('victims', '—'),
+                data_at_risk="📦 Data exfiltrated",
                 attack_date=attack_date,
                 ransomware_group=details.get('ransomware_group', 'Unknown'),
                 source="ransomware.live",
@@ -204,7 +164,7 @@ def get_ransomware_live_victims(days_back: int = 3) -> list[BreachReport]:
                 industry=company_info.get("industry", "")
             ))
             
-            time.sleep(0.3)
+            time.sleep(0.2)
     
     except Exception as e:
         print(f"Error: {e}")
@@ -212,290 +172,288 @@ def get_ransomware_live_victims(days_back: int = 3) -> list[BreachReport]:
     return victims
 
 
-def get_breachsense_breaches() -> list[BreachReport]:
-    """Scrape breachsense.com"""
-    breaches = []
-    
-    try:
-        print("[*] Fetching breachsense...")
-        # Get recent breaches page
-        month = datetime.now().strftime("%Y/%m").lower()
-        url = f"https://www.breachsense.com/breaches/{month}/"
-        resp = requests.get(url, headers=HEADERS, timeout=60)
-        
-        if resp.status_code != 200:
-            # Try without month
-            url = "https://www.breachsense.com/breaches/"
-            resp = requests.get(url, headers=HEADERS, timeout=60)
-        
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        
-        for article in soup.find_all('article')[:15]:
-            link = article.find('a', href=True)
-            if not link:
-                continue
-            
-            href = link.get('href', '')
-            title = link.get_text(strip=True)
-            
-            if not title or 'breach' in href.lower():
-                continue
-            
-            # Get description
-            desc = article.get_text(strip=True)
-            
-            # Extract info
-            actor_match = re.search(r'Threat Actor[:\s]+([A-Za-z]+)', desc)
-            count_match = re.search(r'(\d[\d,]*)\s*(?:records?|users?|people)', desc, re.I)
-            
-            # Get company info
-            company_info = search_company_info(title)
-            
-            data_at_risk = extract_sensitive_data(desc) or extract_sensitive_data(company_info.get("description", ""))
-            
-            breaches.append(BreachReport(
-                company_name=title,
-                location="Unknown",
-                victims=count_match.group(1) if count_match else "Unknown",
-                data_at_risk=data_at_risk if data_at_risk else "Data exposed",
-                attack_date=datetime.now().strftime('%Y-%m-%d'),
-                ransomware_group=actor_match.group(1) if actor_match else "Unknown",
-                source="breachsense",
-                url=href,
-                description=desc[:200],
-                company_description=company_info.get("description", ""),
-                industry=company_info.get("industry", "")
-            ))
-    
-    except Exception as e:
-        print(f"    Error: {e}")
-    
-    return breaches[:10]
-
-
-def get_hipaa_breaches() -> list[BreachReport]:
-    """Scrape hipaajournal breach news"""
-    breaches = []
-    
-    try:
-        print("[*] Fetching hipaajournal...")
-        url = "https://www.hipaajournal.com/category/hipaa-breach-news/"
-        resp = requests.get(url, headers=HEADERS, timeout=60)
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        
-        for article in soup.find_all(['article', 'div'], class_=['', 'post', 'entry'])[:15]:
-            # Look for links
-            link = article.find('a', href=True)
-            if not link:
-                continue
-            
-            title_link = None
-            for a in article.find_all('a'):
-                if a.get_text(strip=True) and len(a.get_text(strip=True)) > 5:
-                    title_link = a
-                    break
-            
-            if not title_link:
-                continue
-            
-            title = title_link.get_text(strip=True)
-            href = title_link.get('href', '')
-            
-            if not title or 'breach' not in href.lower():
-                continue
-            
-            # Get description
-            desc = article.get_text(strip=True)[:300]
-            
-            # Get company info
-            company_info = search_company_info(title)
-            
-            data_at_risk = extract_sensitive_data(desc) or "PHI (Health Data)"
-            
-            breaches.append(BreachReport(
-                company_name=title,
-                location="US",  # HIPAA breaches are mostly US
-                victims="Unknown",
-                data_at_risk=data_at_risk,
-                attack_date=datetime.now().strftime('%Y-%m-%d'),
-                ransomware_group="Unknown",
-                source="hipaajournal",
-                url=href,
-                description=desc,
-                company_description=company_info.get("description", ""),
-                industry=company_info.get("industry", "Healthcare")
-            ))
-    
-    except Exception as e:
-        print(f"    Error: {e}")
-    
-    return breaches[:10]
-
-
 def extract_sensitive_data(description: str) -> str:
     if not description:
         return ""
     desc_lower = description.lower()
     found = []
+    
     mapping = {
-        "ssn": "SSN", "social security": "Social Security Numbers",
-        "passport": "Passport Numbers", "driver license": "Driver's License",
-        "credit card": "Credit Card Info", "bank account": "Bank Account Details",
-        "health": "Health Data", "medical": "Medical Data", "phi": "PHI",
-        "patient": "Patient Records", "insurance": "Insurance Info",
-        "dob": "Date of Birth", "date of birth": "Date of Birth",
-        "email": "Email Addresses", "password": "Passwords",
-        "credentials": "Credentials", "ein": "EIN", "tax id": "Tax ID"
+        "ssn": "🔐 SSN", "social security": "🔐 Social Security Numbers",
+        "passport": "🛂 Passport", "driver license": "🪪 Driver's License",
+        "credit card": "💳 Credit Card", "bank account": "🏦 Bank Account",
+        "health": "🏥 Health Data", "medical": "🏥 Medical Data", "phi": "🏥 PHI",
+        "patient": "🏥 Patient Records", "insurance": "🏥 Insurance",
+        "dob": "📅 Date of Birth", "email": "📧 Email Addresses",
+        "password": "🔑 Passwords", "credentials": "🔑 Credentials"
     }
+    
     for kw, display in mapping.items():
         if kw in desc_lower and display not in found:
             found.append(display)
-    return ", ".join(found) if found else ""
+    
+    return " | ".join(found) if found else "📦 Data exfiltrated"
 
 
 def generate_html_view(breaches: list[BreachReport]) -> str:
-    rows = ""
+    # Group by date
+    by_date = {}
     for b in breaches:
-        # Color coding
-        if "PHI" in b.data_at_risk or "Health" in b.data_at_risk or "Medical" in b.data_at_risk or b.industry == "Healthcare":
-            row_class = "sensitive-health"
-        elif "SSN" in b.data_at_risk or "Passport" in b.data_at_risk:
-            row_class = "sensitive-id"
-        elif b.victims != "Unknown":
-            try:
-                if int(b.victims.replace(',', '')) > 100000:
-                    row_class = "high-volume"
-                else:
-                    row_class = ""
-            except:
-                row_class = ""
-        else:
-            row_class = ""
-        
-        # Show company description or industry
-        display_info = b.company_description[:80] + "..." if b.company_description and len(b.company_description) > 80 else b.company_description
-        if b.industry and b.industry not in str(display_info):
-            display_info = f"[{b.industry}] {display_info}" if display_info else f"[{b.industry}]"
-        
-        victims_display = b.victims if b.victims != "Unknown" else "—"
-        
-        rows += f"""
-        <tr class="{row_class}">
-            <td><a href="{b.url}" target="_blank">{b.company_name}</a></td>
-            <td>{b.industry if b.industry else '—'}</td>
-            <td>{b.location}</td>
-            <td>{victims_display}</td>
-            <td>{b.data_at_risk}</td>
-            <td>{b.attack_date}</td>
-            <td>{b.ransomware_group}</td>
-            <td>{display_info}</td>
-        </tr>
-"""
+        date = b.attack_date
+        if date not in by_date:
+            by_date[date] = []
+        by_date[date].append(b)
     
-    html = f"""<!DOCTYPE html>
+    date_blocks = ""
+    for date in sorted(by_date.keys(), reverse=True):
+        items = by_date[date]
+        
+        item_rows = ""
+        for b in items:
+            # Badge styles
+            if "🏥" in (b.industry or ""):
+                badge = "badge-health"
+            elif "🏦" in (b.industry or ""):
+                badge = "badge-financial"
+            elif "🏛️" in (b.industry or ""):
+                badge = "badge-gov"
+            else:
+                badge = "badge-default"
+            
+            industry = f'<span class="badge {badge}">{b.industry}</span>' if b.industry else '<span class="badge">—</span>'
+            
+            # Company description
+            desc = b.company_description[:100] + "..." if b.company_description and len(b.company_description) > 100 else b.company_description
+            desc_html = f'<div class="company-desc">{desc}</div>' if desc else ""
+            
+            item_rows += f'''
+            <div class="breach-card">
+                <div class="breach-header">
+                    <a href="{b.url}" target="_blank" class="company-name">{b.company_name}</a>
+                    {industry}
+                </div>
+                <div class="breach-details">
+                    <span class="detail"><span class="label">Attacker:</span> {b.ransomware_group}</span>
+                    <span class="detail"><span class="label">Location:</span> {b.location}</span>
+                </div>
+                {desc_html}
+            </div>
+'''
+        
+        date_blocks += f'''
+        <div class="date-group">
+            <h3 class="date-header">{date}</h3>
+            <div class="breach-list">
+                {item_rows}
+            </div>
+        </div>
+'''
+    
+    # Stats
+    total = len(breaches)
+    healthcare = len([b for b in breaches if "🏥" in (b.industry or "")])
+    financial = len([b for b in breaches if "🏦" in (b.industry or "")])
+    
+    html = f'''<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Data Breach Alerts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚨 Data Breach Alerts</title>
     <style>
-        body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 40px; background: #f5f5f5; }}
-        h1 {{ color: #333; }}
-        .meta {{ color: #666; margin-bottom: 20px; }}
-        table {{ width: 100%; border-collapse: collapse; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }}
-        th, td {{ padding: 10px; text-align: left; border-bottom: 1px solid #eee; }}
-        th {{ background: #f8f8f8; font-weight: 600; font-size: 12px; }}
-        td {{ font-size: 12px; }}
-        tr:hover {{ background: #fafafa; }}
-        a {{ color: #0066cc; text-decoration: none; }}
-        a:hover {{ text-decoration: underline; }}
-        .sensitive-health {{ background: #fff0f0; }}
-        .sensitive-id {{ background: #fff8e0; }}
-        .high-volume {{ background: #f0f0ff; }}
-        .legend {{ margin-top: 20px; font-size: 14px; color: #666; }}
-        .legend span {{ display: inline-block; padding: 2px 8px; margin-right: 10px; border-radius: 3px; }}
+        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+        body {{ 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #e4e4e7;
+            padding: 40px 20px;
+        }}
+        .container {{ max-width: 900px; margin: 0 auto; }}
+        
+        header {{
+            text-align: center;
+            margin-bottom: 40px;
+        }}
+        h1 {{
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ff6b6b, #ffa502);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }}
+        .subtitle {{
+            color: #9ca3af;
+            font-size: 1rem;
+        }}
+        
+        .stats {{
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }}
+        .stat {{
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 15px 25px;
+            text-align: center;
+        }}
+        .stat-value {{ font-size: 1.8rem; font-weight: bold; color: #fff; }}
+        .stat-label {{ font-size: 0.85rem; color: #9ca3af; }}
+        
+        .date-group {{
+            margin-bottom: 35px;
+        }}
+        .date-header {{
+            font-size: 1.1rem;
+            color: #9ca3af;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }}
+        
+        .breach-list {{
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }}
+        
+        .breach-card {{
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 18px 20px;
+            transition: all 0.2s ease;
+        }}
+        .breach-card:hover {{
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.15);
+            transform: translateX(4px);
+        }}
+        
+        .breach-header {{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }}
+        .company-name {{
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+        }}
+        .company-name:hover {{
+            color: #60a5fa;
+            text-decoration: underline;
+        }}
+        
+        .badge {{
+            font-size: 0.75rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 500;
+        }}
+        .badge-default {{ background: rgba(255,255,255,0.1); color: #9ca3af; }}
+        .badge-health {{ background: rgba(239,68,68,0.2); color: #fca5a5; }}
+        .badge-financial {{ background: rgba(59,130,246,0.2); color: #93c5fd; }}
+        .badge-gov {{ background: rgba(168,85,247,0.2); color: #d8b4fe; }}
+        
+        .breach-details {{
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+        }}
+        .detail {{ color: #9ca3af; }}
+        .detail .label {{ color: #6b7280; }}
+        
+        .company-desc {{
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-style: italic;
+        }}
+        
+        footer {{
+            text-align: center;
+            margin-top: 50px;
+            color: #4b5563;
+            font-size: 0.85rem;
+        }}
+        footer a {{ color: #60a5fa; text-decoration: none; }}
     </style>
 </head>
 <body>
-    <h1>🚨 Data Breach Alerts</h1>
-    <div class="meta">
-        Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}<br>
-        Sources: ransomware.live, breachsense, hipaajournal
-    </div>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>Company</th>
-                <th>Industry</th>
-                <th>Location</th>
-                <th>Victims</th>
-                <th>Data at Risk</th>
-                <th>Date</th>
-                <th>Attacker</th>
-                <th>Company Info</th>
-            </tr>
-        </thead>
-        <tbody>
-{rows}
-        </tbody>
-    </table>
-    
-    <div class="legend">
-        <span style="background:#fff0f0">Healthcare/PHI</span>
-        <span style="background:#fff8e0">ID Docs</span>
-        <span style="background:#f0f0ff">100k+ Victims</span>
+    <div class="container">
+        <header>
+            <h1>🚨 Data Breach Alerts</h1>
+            <p class="subtitle">Automated monitoring of ransomware attacks & data breaches</p>
+        </header>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value">{total}</div>
+                <div class="stat-label">Breaches Found</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">{healthcare}</div>
+                <div class="stat-label">🏥 Healthcare</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value">{financial}</div>
+                <div class="stat-label">🏦 Financial</div>
+            </div>
+        </div>
+        
+        {date_blocks}
+        
+        <footer>
+            <p>Sources: ransomware.live | Updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}</p>
+            <p><a href="https://www.ransomware.live" target="_blank">View Source</a></p>
+        </footer>
     </div>
 </body>
-</html>"""
+</html>'''
     return html
-
-
-def generate_json_feed(breaches: list[BreachReport]) -> dict:
-    return {
-        "version": "https://jsonfeed.org/version/1",
-        "title": "Data Breach Alerts",
-        "generated_at": datetime.now().isoformat(),
-        "items": [asdict(b) for b in breaches]
-    }
 
 
 def main():
     print(f"[*] Running breach monitor - {datetime.now()}")
     
-    all_breaches = []
+    breaches = get_ransomware_live_victims(days_back=7)
     
-    # Get from each source
-    all_breaches.extend(get_ransomware_live_victims(days_back=3))
-    all_breaches.extend(get_breachsense_breaches())
-    all_breaches.extend(get_hipaa_breaches())
-    
-    # Remove duplicates by company name
-    seen = set()
-    unique = []
-    for b in all_breaches:
-        key = b.company_name.lower().strip()
-        if key not in seen:
-            seen.add(key)
-            unique.append(b)
-    
-    breaches = unique[:30]  # Limit to 30
-    
-    print(f"\n[*] Total: {len(breaches)} unique breaches")
-    for b in breaches[:10]:
-        print(f"  - {b.company_name} ({b.industry}) | {b.ransomware_group}")
-    if len(breaches) > 10:
-        print(f"  ... and {len(breaches) - 10} more")
-    
-    # Save files
-    feed = generate_json_feed(breaches)
-    with open(JSON_PATH, 'w') as f:
-        json.dump(feed, f, indent=2)
-    print(f"\n[*] JSON: {JSON_PATH}")
-    
+    # Save HTML
     html = generate_html_view(breaches)
     with open(HTML_PATH, 'w') as f:
         f.write(html)
-    print(f"[*] HTML: {HTML_PATH}")
+    
+    # Save simple JSON
+    feed = {
+        "generated_at": datetime.now().isoformat(),
+        "total_breaches": len(breaches),
+        "breaches": [
+            {
+                "company": b.company_name,
+                "date": b.attack_date,
+                "attacker": b.ransomware_group,
+                "location": b.location,
+                "industry": b.industry,
+                "url": b.url
+            }
+            for b in breaches
+        ]
+    }
+    with open(JSON_PATH, 'w') as f:
+        json.dump(feed, f, indent=2)
+    
+    print(f"\n[*] Found {len(breaches)} breaches")
+    print(f"[*] Saved to: {HTML_PATH}")
+    print(f"[*] Saved to: {JSON_PATH}")
 
 
 if __name__ == "__main__":
