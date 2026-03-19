@@ -3,431 +3,483 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚨 Data Breach Alerts</title>
+    <title>🚨 Breach Monitor</title>
     <style>
+        :root {
+            --bg: #0f0f23;
+            --card-bg: #1a1a2e;
+            --border: #2a2a4a;
+            --text: #e4e4e7;
+            --text-dim: #9ca3af;
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+        }
+        
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            color: #e4e4e7;
-            padding: 40px 20px;
-        }
-        .container { max-width: 900px; margin: 0 auto; }
-        
-        header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, #ff6b6b, #ffa502);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .subtitle {
-            color: #9ca3af;
-            font-size: 1rem;
         }
         
-        .stats {
+        .navbar {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 30px;
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .stat {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 15px 25px;
+        
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #ef4444, #f59e0b);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .nav-stats {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-stat {
             text-align: center;
         }
-        .stat-value { font-size: 1.8rem; font-weight: bold; color: #fff; }
-        .stat-label { font-size: 0.85rem; color: #9ca3af; }
         
-        .date-group {
-            margin-bottom: 35px;
-        }
-        .date-header {
-            font-size: 1.1rem;
-            color: #9ca3af;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        .nav-stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
         }
         
-        .breach-list {
+        .nav-stat-label {
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+        
+        .main {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+        
+        .sidebar {
+            width: 260px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            position: sticky;
+            top: 70px;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+        }
+        
+        .filter-section {
+            margin-bottom: 25px;
+        }
+        
+        .filter-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+        
+        .quick-filters {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
+        }
+        
+        .quick-btn {
+            padding: 10px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-dim);
+            cursor: pointer;
+            text-align: left;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .quick-btn:hover, .quick-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }
+        
+        .quick-btn .count {
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }
+        
+        .content {
+            flex: 1;
+            padding: 25px;
+        }
+        
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 15px;
+            width: 300px;
+        }
+        
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-size: 0.9rem;
+            width: 100%;
+            margin-left: 10px;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+        }
+        
+        .search-box input::placeholder {
+            color: var(--text-dim);
+        }
+        
+        .results-count {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+        
+        .breach-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 15px;
         }
         
         .breach-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 18px 20px;
-            transition: all 0.2s ease;
+            padding: 18px;
+            transition: all 0.2s;
+            cursor: pointer;
         }
+        
         .breach-card:hover {
-            background: rgba(255,255,255,0.06);
-            border-color: rgba(255,255,255,0.15);
-            transform: translateX(4px);
+            border-color: var(--accent);
+            transform: translateY(-2px);
         }
         
-        .breach-header {
+        .breach-card-header {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-        .company-name {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #fff;
-            text-decoration: none;
-        }
-        .company-name:hover {
-            color: #60a5fa;
-            text-decoration: underline;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
         }
         
-        .badge {
-            font-size: 0.75rem;
+        .company-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text);
+            text-decoration: none;
+            word-break: break-word;
+        }
+        
+        .company-name:hover {
+            color: var(--accent);
+        }
+        
+        .industry-badge {
+            font-size: 0.7rem;
             padding: 4px 10px;
             border-radius: 20px;
-            font-weight: 500;
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--accent-hover);
+            white-space: nowrap;
         }
-        .badge-default { background: rgba(255,255,255,0.1); color: #9ca3af; }
-        .badge-health { background: rgba(239,68,68,0.2); color: #fca5a5; }
-        .badge-financial { background: rgba(59,130,246,0.2); color: #93c5fd; }
-        .badge-gov { background: rgba(168,85,247,0.2); color: #d8b4fe; }
         
-        .breach-details {
+        .breach-meta {
             display: flex;
-            gap: 20px;
             flex-wrap: wrap;
-            font-size: 0.9rem;
+            gap: 15px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
         }
-        .detail { color: #9ca3af; }
-        .detail .label { color: #6b7280; }
         
-        .company-desc {
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .attacker-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border-radius: 4px;
+            font-size: 0.75rem;
             margin-top: 10px;
-            font-size: 0.85rem;
-            color: #6b7280;
-            font-style: italic;
         }
         
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            color: #4b5563;
-            font-size: 0.85rem;
+        .date-badge {
+            font-size: 0.75rem;
+            color: var(--text-dim);
         }
-        footer a { color: #60a5fa; text-decoration: none; }
+        
+        .no-results {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-dim);
+        }
+        
+        .no-results-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🚨 Data Breach Alerts</h1>
-            <p class="subtitle">Automated monitoring of ransomware attacks & data breaches</p>
-        </header>
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon">⚠️</div>
+            <span>Breach Monitor</span>
+        </div>
+        <div class="nav-stats">
+            <div class="nav-stat">
+                <div class="nav-stat-value" id="totalCount">25</div>
+                <div class="nav-stat-label">Total</div>
+            </div>
+            <div class="nav-stat">
+                <div class="nav-stat-value">4</div>
+                <div class="nav-stat-label">Industries</div>
+            </div>
+            <div class="nav-stat">
+                <div class="nav-stat-value">15</div>
+                <div class="nav-stat-label">Groups</div>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="main">
+        <aside class="sidebar">
+            <div class="filter-section">
+                <div class="filter-title">🔍 Search</div>
+                <div class="search-box">
+                    <span>🔎</span>
+                    <input type="text" id="searchInput" placeholder="Search companies...">
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-title">🏭 Industry</div>
+                <select class="filter-select" id="industryFilter">
+                    <option value="">All Industries</option>
+                    <option value="Financial">🏦 Financial</option><option value="Healthcare">🏥 Healthcare</option><option value="Manufacturing">🏭 Manufacturing</option><option value="Transportation">✈️ Transportation</option>
+                </select>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-title">💀 Attacker Group</div>
+                <select class="filter-select" id="attackerFilter">
+                    <option value="">All Attackers</option>
+                    <option value="Akira">Akira</option><option value="Coinbasecartel">Coinbasecartel</option><option value="Dragonforce">Dragonforce</option><option value="Everest">Everest</option><option value="Handala">Handala</option><option value="Insomnia">Insomnia</option><option value="Interlock">Interlock</option><option value="Kairos">Kairos</option><option value="Payload">Payload</option><option value="Play">Play</option><option value="Qilin">Qilin</option><option value="Safepay">Safepay</option><option value="Silentransomgroup">Silentransomgroup</option><option value="Sinobi">Sinobi</option><option value="Thegentlemen">Thegentlemen</option>
+                </select>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-title">📅 Date</div>
+                <select class="filter-select" id="dateFilter">
+                    <option value="">All Dates</option>
+                    <option value="2026-03-19">2026-03-19</option><option value="2026-03-18">2026-03-18</option><option value="2026-03-17">2026-03-17</option><option value="2026-03-16">2026-03-16</option><option value="2026-03-15">2026-03-15</option>
+                </select>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-title">⚡ Quick Filters</div>
+                <div class="quick-filters">
+                    <button class="quick-btn" onclick="filterByIndustry('Healthcare')">
+                        🏥 Healthcare <span class="count">2</span>
+                    </button>
+                    <button class="quick-btn" onclick="filterByIndustry('Financial')">
+                        🏦 Financial <span class="count">1</span>
+                    </button>
+                    <button class="quick-btn" onclick="filterByIndustry('Technology')">
+                        💻 Technology <span class="count">0</span>
+                    </button>
+                    <button class="quick-btn" onclick="filterByIndustry('Government')">
+                        🏛️ Government <span class="count">0</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <button class="quick-btn" onclick="clearFilters()" style="width:100%; justify-content:center;">
+                    ✖️ Clear All Filters
+                </button>
+            </div>
+        </aside>
         
-        <div class="stats">
-            <div class="stat">
-                <div class="stat-value">20</div>
-                <div class="stat-label">Breaches Found</div>
+        <main class="content">
+            <div class="content-header">
+                <div class="results-count">Showing <span id="showingCount">25</span> breaches</div>
             </div>
-            <div class="stat">
-                <div class="stat-value">1</div>
-                <div class="stat-label">🏥 Healthcare</div>
+            
+            <div class="breach-grid" id="breachGrid">
+                <!-- Cards rendered by JavaScript -->
             </div>
-            <div class="stat">
-                <div class="stat-value">0</div>
-                <div class="stat-label">🏦 Financial</div>
+            
+            <div class="no-results" id="noResults" style="display:none;">
+                <div class="no-results-icon">🔍</div>
+                <div>No breaches match your filters</div>
             </div>
-        </div>
-        
-        
-        <div class="date-group">
-            <h3 class="date-header">2026-03-19</h3>
-            <div class="breach-list">
-                
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/Qm9uaGV1cmVAc3BhY2ViZWFycw==" target="_blank" class="company-name">Bonheure</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Spacebears</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            </div>
-        </div>
-
-        <div class="date-group">
-            <h3 class="date-header">2026-03-18</h3>
-            <div class="breach-list">
-                
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/VmV4aW4gTm9ybWFuZEB0aGVnZW50bGVtZW4=" target="_blank" class="company-name">Vexin Normand</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Thegentlemen</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                <div class="company-desc">Former French county</div>
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/QlRYIEdsb2JhbCBMb2dpc3RpY3NAcWlsaW4=" target="_blank" class="company-name">BTX Global Logistics</a>
-                    <span class="badge badge-default">✈️ Transportation</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Qilin</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/MkxHIFByb2RAdGhlZ2VudGxlbWVu" target="_blank" class="company-name">2LG Prod</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Thegentlemen</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/Z2FzdGVpZ2VyLmRlc2lnbkBkcmFnb25mb3JjZQ==" target="_blank" class="company-name">gasteiger.design</a>
-                    <span class="badge badge-default">⚡ Energy</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Dragonforce</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/U3VtbWEgRW5lcmd5QHNpbm9iaQ==" target="_blank" class="company-name">Summa Energy</a>
-                    <span class="badge badge-default">⚡ Energy</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Sinobi</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/VGV4b2xsaW5pQGFraXJh" target="_blank" class="company-name">Texollini</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Akira</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/RXhjZWxsZW50aWFtQHRoZWdlbnRsZW1lbg==" target="_blank" class="company-name">Excellentiam</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Thegentlemen</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/VmFsbGV5IEZhbWlseSBIZWFsdGggQ2FyZUBpbnNvbW5pYQ==" target="_blank" class="company-name">Valley Family Health Care</a>
-                    <span class="badge badge-health">🏥 Healthcare</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Insomnia</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            </div>
-        </div>
-
-        <div class="date-group">
-            <h3 class="date-header">2026-03-17</h3>
-            <div class="breach-list">
-                
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/R3NvbHV0aW9uekBwbGF5" target="_blank" class="company-name">Gsolutionz</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Play</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/YmVzdGdyYXBoaWNzLm5ldEBkcmFnb25mb3JjZQ==" target="_blank" class="company-name">bestgraphics.net</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Dragonforce</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/V2hvIGlzIFZhaGlkT25saW5lP0BoYW5kYWxh" target="_blank" class="company-name">Who is VahidOnline?</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Handala</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/VmFoaWQgT2ZmbGluZSBNZW1iZXJzQGhhbmRhbGE=" target="_blank" class="company-name">Vahid Offline Members</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Handala</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/KioqKiogKioqKiogJiAqKioqKipAZ2VuZXNpcw==" target="_blank" class="company-name">***** ***** & ******</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Genesis</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/cGFscmFtLmNvbUBraWxsc2Vj" target="_blank" class="company-name">palram.com</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Killsec</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/U2h3YXBub0BxaWxpbg==" target="_blank" class="company-name">Shwapno</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Qilin</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                <div class="company-desc">Retail supermarket chain in Bangladesh</div>
-            </div>
-
-            </div>
-        </div>
-
-        <div class="date-group">
-            <h3 class="date-header">2026-03-16</h3>
-            <div class="breach-list">
-                
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/Vm9uIFdlaXNlIEFzc29jaWF0ZXNAcWlsaW4=" target="_blank" class="company-name">Von Weise Associates</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Qilin</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/U2hvY2sgZm9yIElzcmFlbGkgSW50ZWxsaWdlbmNlOiAxMDAsMDAwIENsYXNzaWZpZWQgRW1haWxzIG9mIE1vc3NhZOKAmXMgRXgtRGVwdXR5IERpcmVjdG9yIFMuLi5AaGFuZGFsYQ==" target="_blank" class="company-name">Shock for Israeli Intelligence: 100,000 Classified Emails of Mossad’s Ex-Deputy Director S...</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Handala</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/TWluZ2F0IExvY2F0aW9uQGFraXJh" target="_blank" class="company-name">Mingat Location</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Akira</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="https://www.ransomware.live/id/Q2hhc2UgQXNpYUB0aGVnZW50bGVtZW4=" target="_blank" class="company-name">Chase Asia</a>
-                    <span class="badge">—</span>
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> Thegentlemen</span>
-                    <span class="detail"><span class="label">Location:</span> 🌍</span>
-                </div>
-                
-            </div>
-
-            </div>
-        </div>
-
-        
-        <footer>
-            <p>Sources: ransomware.live | Updated: 2026-03-19 09:53</p>
-            <p><a href="https://www.ransomware.live" target="_blank">View Source</a></p>
-        </footer>
+        </main>
     </div>
+    
+    <script>
+        const breaches = [{"company": "Who is VahidOnline?", "date": "2026-03-17", "attacker": "Handala", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/V2hvIGlzIFZhaGlkT25saW5lP0BoYW5kYWxh", "desc": ""}, {"company": "PC SOFT FRANCE", "date": "2026-03-19", "attacker": "Coinbasecartel", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/UEMgU09GVCBGUkFOQ0VAY29pbmJhc2VjYXJ0ZWw=", "desc": ""}, {"company": "Flexform", "date": "2026-03-18", "attacker": "Dragonforce", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/RmxleGZvcm1AZHJhZ29uZm9yY2U=", "desc": ""}, {"company": "L H Lacy", "date": "2026-03-18", "attacker": "Qilin", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/TCBIIExhY3lAcWlsaW4=", "desc": ""}, {"company": "Delta Manufacturing", "date": "2026-03-18", "attacker": "Interlock", "location": "Unknown", "industry": "Manufacturing", "url": "https://www.ransomware.live/id/RGVsdGEgTWFudWZhY3R1cmluZ0BpbnRlcmxvY2s=", "desc": ""}, {"company": "Construction Equipment Parts", "date": "2026-03-18", "attacker": "Dragonforce", "location": "Unknown", "industry": "Manufacturing", "url": "https://www.ransomware.live/id/Q29uc3RydWN0aW9uIEVxdWlwbWVudCBQYXJ0c0BkcmFnb25mb3JjZQ==", "desc": ""}, {"company": "**l** ****** ****** C***", "date": "2026-03-17", "attacker": "Insomnia", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/KipsKiogKioqKioqICoqKioqKiBDKioqQGluc29tbmlh", "desc": ""}, {"company": "Evaluate a Norstella company", "date": "2026-03-15", "attacker": "Everest", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/RXZhbHVhdGUgYSBOb3JzdGVsbGEgY29tcGFueUBldmVyZXN0", "desc": ""}, {"company": "Folet & Rivoire", "date": "2026-03-16", "attacker": "Kairos", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/Rm9sZXQgJiBSaXZvaXJlQGthaXJvcw==", "desc": ""}, {"company": "Canal Capital", "date": "2026-03-16", "attacker": "Thegentlemen", "location": "Unknown", "industry": "Financial", "url": "https://www.ransomware.live/id/Q2FuYWwgQ2FwaXRhbEB0aGVnZW50bGVtZW4=", "desc": ""}, {"company": "tiefenbachergroup.com", "date": "2026-03-17", "attacker": "Safepay", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/dGllZmVuYmFjaGVyZ3JvdXAuY29tQHNhZmVwYXk=", "desc": ""}, {"company": "Salag", "date": "2026-03-15", "attacker": "Qilin", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/U2FsYWdAcWlsaW4=", "desc": ""}, {"company": "Interpack Northwest", "date": "2026-03-18", "attacker": "Sinobi", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/SW50ZXJwYWNrIE5vcnRod2VzdEBzaW5vYmk=", "desc": ""}, {"company": "Vexin Normand", "date": "2026-03-18", "attacker": "Thegentlemen", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/VmV4aW4gTm9ybWFuZEB0aGVnZW50bGVtZW4=", "desc": ""}, {"company": "Gsolutionz", "date": "2026-03-17", "attacker": "Play", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/R3NvbHV0aW9uekBwbGF5", "desc": ""}, {"company": "HARTMANN BAU", "date": "2026-03-18", "attacker": "Dragonforce", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/SEFSVE1BTk4gQkFVQGRyYWdvbmZvcmNl", "desc": ""}, {"company": "Pilana Group, TRITCON", "date": "2026-03-16", "attacker": "Akira", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/UGlsYW5hIEdyb3VwLCBUUklUQ09OQGFraXJh", "desc": ""}, {"company": "Steve Quick Jeweler", "date": "2026-03-16", "attacker": "Akira", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/U3RldmUgUXVpY2sgSmV3ZWxlckBha2lyYQ==", "desc": ""}, {"company": "Executive Aviation", "date": "2026-03-15", "attacker": "Play", "location": "Unknown", "industry": "Transportation", "url": "https://www.ransomware.live/id/RXhlY3V0aXZlIEF2aWF0aW9uQHBsYXk=", "desc": ""}, {"company": "BCN Medical", "date": "2026-03-16", "attacker": "Thegentlemen", "location": "Unknown", "industry": "Healthcare", "url": "https://www.ransomware.live/id/QkNOIE1lZGljYWxAdGhlZ2VudGxlbWVu", "desc": ""}, {"company": "Royal Bahrain Hospital", "date": "2026-03-15", "attacker": "Payload", "location": "Unknown", "industry": "Healthcare", "url": "https://www.ransomware.live/id/Um95YWwgQmFocmFpbiBIb3NwaXRhbEBwYXlsb2Fk", "desc": ""}, {"company": "Wood Smith Henning & Berman LLP", "date": "2026-03-18", "attacker": "Silentransomgroup", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/V29vZCBTbWl0aCBIZW5uaW5nICYgQmVybWFuIExMUEBTaWxlbnRSYW5zb21Hcm91cA==", "desc": ""}, {"company": "Teco", "date": "2026-03-17", "attacker": "Sinobi", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/VGVjb0BzaW5vYmk=", "desc": ""}, {"company": "Chase Asia", "date": "2026-03-16", "attacker": "Thegentlemen", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/Q2hhc2UgQXNpYUB0aGVnZW50bGVtZW4=", "desc": ""}, {"company": "Centro de Especialidades", "date": "2026-03-16", "attacker": "Thegentlemen", "location": "Unknown", "industry": "", "url": "https://www.ransomware.live/id/Q2VudHJvIGRlIEVzcGVjaWFsaWRhZGVzQHRoZWdlbnRsZW1lbg==", "desc": ""}];
+        
+        const industryIcons = {"Healthcare": "\ud83c\udfe5", "Financial": "\ud83c\udfe6", "Technology": "\ud83d\udcbb", "Government": "\ud83c\udfdb\ufe0f", "Education": "\ud83c\udf93", "Manufacturing": "\ud83c\udfed", "Retail": "\ud83c\udfea", "Transportation": "\u2708\ufe0f", "Energy": "\u26a1"};
+        
+        function renderBreaches(data) {
+            const grid = document.getElementById('breachGrid');
+            const count = document.getElementById('showingCount');
+            const noResults = document.getElementById('noResults');
+            
+            count.textContent = data.length;
+            
+            if (data.length === 0) {
+                grid.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }
+            
+            noResults.style.display = 'none';
+            grid.innerHTML = data.map(b => `
+                <div class="breach-card">
+                    <div class="breach-card-header">
+                        <a href="${b.url}" target="_blank" class="company-name">${b.company}</a>
+                        ${b.industry ? `<span class="industry-badge">${industryIcons[b.industry] || ''} ${b.industry}</span>` : ''}
+                    </div>
+                    <div class="breach-meta">
+                        <div class="meta-item">
+                            <span>📅</span> ${b.date}
+                        </div>
+                        <div class="meta-item">
+                            <span>📍</span> ${b.location}
+                        </div>
+                    </div>
+                    ${b.attacker !== 'Unknown' ? `<span class="attacker-tag">💀 ${b.attacker}</span>` : ''}
+                </div>
+            `).join('');
+        }
+        
+        function filter() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const industry = document.getElementById('industryFilter').value;
+            const attacker = document.getElementById('attackerFilter').value;
+            const date = document.getElementById('dateFilter').value;
+            
+            const filtered = breaches.filter(b => {
+                const matchSearch = !search || b.company.toLowerCase().includes(search) || b.attacker.toLowerCase().includes(search);
+                const matchIndustry = !industry || b.industry === industry;
+                const matchAttacker = !attacker || b.attacker === attacker;
+                const matchDate = !date || b.date === date;
+                return matchSearch && matchIndustry && matchAttacker && matchDate;
+            });
+            
+            renderBreaches(filtered);
+        }
+        
+        function filterByIndustry(ind) {
+            document.getElementById('industryFilter').value = ind;
+            filter();
+        }
+        
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('industryFilter').value = '';
+            document.getElementById('attackerFilter').value = '';
+            document.getElementById('dateFilter').value = '';
+            filter();
+        }
+        
+        document.getElementById('searchInput').addEventListener('input', filter);
+        document.getElementById('industryFilter').addEventListener('change', filter);
+        document.getElementById('attackerFilter').addEventListener('change', filter);
+        document.getElementById('dateFilter').addEventListener('change', filter);
+        
+        // Initial render
+        renderBreaches(breaches);
+    </script>
 </body>
 </html>

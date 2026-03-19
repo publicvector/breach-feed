@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Breach Monitor - Clean, readable output
+Breach Monitor - Dashboard UI with filtering & navigation
 """
 
 import os
@@ -19,7 +19,7 @@ JSON_PATH = os.path.join(OUTPUT_DIR, "breach-feed.json")
 HTML_PATH = os.path.join(OUTPUT_DIR, "breach-feed.html")
 
 HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
 }
 
 
@@ -43,35 +43,21 @@ def search_company_info(company_name: str) -> dict:
     name_lower = company_name.lower()
     
     industry_patterns = {
-        "🏥 Healthcare": ["hospital", "health", "medical", "clinic", "pharma", "pharmacy", "dental", "care", "clinical"],
-        "🏦 Financial": ["bank", "financial", "insurance", "credit", "capital", "investment", "trust", "securities"],
-        "💻 Technology": ["tech", "software", "systems", "digital", "data", "cloud", "cyber"],
-        "🏛️ Government": ["government", "municipal", "city", "county", "state", "federal", "court", "cad"],
-        "🎓 Education": ["school", "university", "college", "academy", "education"],
-        "🏭 Manufacturing": ["manufacturing", "industrial", "metal", "steel", "chemical", "equipment", "parts"],
-        "🏪 Retail": ["retail", "store", "shop", "market", "distribution"],
-        "✈️ Transportation": ["transport", "logistics", "shipping", "trucking", "airline", "aviation", "freight"],
-        "⚡ Energy": ["energy", "electric", "power", "gas", "oil", "solar"],
-        "🏗️ Construction": ["construction", "building", "contractor", "architecture", "engineering", "real estate"]
+        "Healthcare": ["hospital", "health", "medical", "clinic", "pharma", "pharmacy", "dental", "care", "clinical"],
+        "Financial": ["bank", "financial", "insurance", "credit", "capital", "investment", "trust"],
+        "Technology": ["tech", "software", "systems", "digital", "data", "cloud", "cyber"],
+        "Government": ["government", "municipal", "city", "county", "state", "federal", "court", "cad"],
+        "Education": ["school", "university", "college", "academy"],
+        "Manufacturing": ["manufacturing", "industrial", "metal", "steel", "chemical", "equipment"],
+        "Retail": ["retail", "store", "shop", "market", "distribution"],
+        "Transportation": ["transport", "logistics", "shipping", "trucking", "airline", "aviation"],
+        "Energy": ["energy", "electric", "power", "gas", "oil", "solar"]
     }
     
     for industry, patterns in industry_patterns.items():
         if any(p in name_lower for p in patterns):
             info["industry"] = industry
             break
-    
-    try:
-        wiki_name = company_name.split('@')[0].strip()
-        wiki_name = re.sub(r'\.com|\.org|\.net|\.io|\.co$', '', wiki_name)
-        wiki_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{requests.utils.quote(wiki_name)}"
-        resp = requests.get(wiki_url, headers=HEADERS, timeout=10)
-        if resp.status_code == 200:
-            data = resp.json()
-            desc = data.get("description", "") or data.get("extract", "")[:200]
-            if desc and "may refer to" not in desc and "Topics referred" not in desc:
-                info["description"] = desc
-    except:
-        pass
     
     return info
 
@@ -122,7 +108,6 @@ def get_ransomware_live_victims(days_back: int = 3) -> list[BreachReport]:
         print("[*] Fetching ransomware.live...")
         resp = requests.get("https://www.ransomware.live/", headers=HEADERS, timeout=60)
         soup = BeautifulSoup(resp.text, 'html.parser')
-        cutoff_date = (datetime.now() - timedelta(days=days_back)).date()
         
         for link in soup.find_all('a', href=True):
             if '/id/' in link.get('href', ''):
@@ -133,7 +118,7 @@ def get_ransomware_live_victims(days_back: int = 3) -> list[BreachReport]:
         
         print(f"    Found {len(seen_urls)} victims")
         
-        for i, victim_url in enumerate(list(seen_urls)[:20]):
+        for i, victim_url in enumerate(list(seen_urls)[:25]):
             try:
                 import base64
                 encoded = victim_url.split('/id/')[-1]
@@ -152,9 +137,9 @@ def get_ransomware_live_victims(days_back: int = 3) -> list[BreachReport]:
             
             victims.append(BreachReport(
                 company_name=company_name,
-                location=details.get('location', '🌍'),
+                location=details.get('location', 'Unknown'),
                 victims=details.get('victims', '—'),
-                data_at_risk="📦 Data exfiltrated",
+                data_at_risk="Data exfiltrated",
                 attack_date=attack_date,
                 ransomware_group=details.get('ransomware_group', 'Unknown'),
                 source="ransomware.live",
@@ -172,251 +157,526 @@ def get_ransomware_live_victims(days_back: int = 3) -> list[BreachReport]:
     return victims
 
 
-def extract_sensitive_data(description: str) -> str:
-    if not description:
-        return ""
-    desc_lower = description.lower()
-    found = []
+def generate_html_dashboard(breaches: list[BreachReport]) -> str:
+    # Get unique values for filters
+    industries = sorted(set(b.industry for b in breaches if b.industry))
+    attackers = sorted(set(b.ransomware_group for b in breaches if b.ransomware_group != 'Unknown'))
+    dates = sorted(set(b.attack_date for b in breaches), reverse=True)
     
-    mapping = {
-        "ssn": "🔐 SSN", "social security": "🔐 Social Security Numbers",
-        "passport": "🛂 Passport", "driver license": "🪪 Driver's License",
-        "credit card": "💳 Credit Card", "bank account": "🏦 Bank Account",
-        "health": "🏥 Health Data", "medical": "🏥 Medical Data", "phi": "🏥 PHI",
-        "patient": "🏥 Patient Records", "insurance": "🏥 Insurance",
-        "dob": "📅 Date of Birth", "email": "📧 Email Addresses",
-        "password": "🔑 Passwords", "credentials": "🔑 Credentials"
+    # Industry icon mapping
+    industry_icons = {
+        "Healthcare": "🏥",
+        "Financial": "🏦", 
+        "Technology": "💻",
+        "Government": "🏛️",
+        "Education": "🎓",
+        "Manufacturing": "🏭",
+        "Retail": "🏪",
+        "Transportation": "✈️",
+        "Energy": "⚡"
     }
     
-    for kw, display in mapping.items():
-        if kw in desc_lower and display not in found:
-            found.append(display)
+    # Create filter options
+    industry_options = "".join(f'<option value="{i}">{industry_icons.get(i, "")} {i}</option>' for i in industries)
+    attacker_options = "".join(f'<option value="{a}">{a}</option>' for a in attackers)
     
-    return " | ".join(found) if found else "📦 Data exfiltrated"
-
-
-def generate_html_view(breaches: list[BreachReport]) -> str:
-    # Group by date
-    by_date = {}
-    for b in breaches:
-        date = b.attack_date
-        if date not in by_date:
-            by_date[date] = []
-        by_date[date].append(b)
-    
-    date_blocks = ""
-    for date in sorted(by_date.keys(), reverse=True):
-        items = by_date[date]
-        
-        item_rows = ""
-        for b in items:
-            # Badge styles
-            if "🏥" in (b.industry or ""):
-                badge = "badge-health"
-            elif "🏦" in (b.industry or ""):
-                badge = "badge-financial"
-            elif "🏛️" in (b.industry or ""):
-                badge = "badge-gov"
-            else:
-                badge = "badge-default"
-            
-            industry = f'<span class="badge {badge}">{b.industry}</span>' if b.industry else '<span class="badge">—</span>'
-            
-            # Company description
-            desc = b.company_description[:100] + "..." if b.company_description and len(b.company_description) > 100 else b.company_description
-            desc_html = f'<div class="company-desc">{desc}</div>' if desc else ""
-            
-            item_rows += f'''
-            <div class="breach-card">
-                <div class="breach-header">
-                    <a href="{b.url}" target="_blank" class="company-name">{b.company_name}</a>
-                    {industry}
-                </div>
-                <div class="breach-details">
-                    <span class="detail"><span class="label">Attacker:</span> {b.ransomware_group}</span>
-                    <span class="detail"><span class="label">Location:</span> {b.location}</span>
-                </div>
-                {desc_html}
-            </div>
-'''
-        
-        date_blocks += f'''
-        <div class="date-group">
-            <h3 class="date-header">{date}</h3>
-            <div class="breach-list">
-                {item_rows}
-            </div>
-        </div>
-'''
-    
-    # Stats
-    total = len(breaches)
-    healthcare = len([b for b in breaches if "🏥" in (b.industry or "")])
-    financial = len([b for b in breaches if "🏦" in (b.industry or "")])
+    # Generate breach cards as JSON for client-side filtering
+    breaches_json = json.dumps([
+        {
+            "company": b.company_name,
+            "date": b.attack_date,
+            "attacker": b.ransomware_group,
+            "location": b.location,
+            "industry": b.industry,
+            "url": b.url,
+            "desc": b.company_description[:100]
+        }
+        for b in breaches
+    ])
     
     html = f'''<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚨 Data Breach Alerts</title>
+    <title>🚨 Breach Monitor</title>
     <style>
+        :root {{
+            --bg: #0f0f23;
+            --card-bg: #1a1a2e;
+            --border: #2a2a4a;
+            --text: #e4e4e7;
+            --text-dim: #9ca3af;
+            --accent: #6366f1;
+            --accent-hover: #818cf8;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --success: #10b981;
+        }}
+        
         * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-        body {{ 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        
+        body {{
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            color: #e4e4e7;
-            padding: 40px 20px;
-        }}
-        .container {{ max-width: 900px; margin: 0 auto; }}
-        
-        header {{
-            text-align: center;
-            margin-bottom: 40px;
-        }}
-        h1 {{
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(90deg, #ff6b6b, #ffa502);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }}
-        .subtitle {{
-            color: #9ca3af;
-            font-size: 1rem;
         }}
         
-        .stats {{
+        .navbar {{
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 30px;
             display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 40px;
-            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }}
-        .stat {{
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 12px;
-            padding: 15px 25px;
+        
+        .logo {{
+            font-size: 1.4rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }}
+        
+        .logo-icon {{
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #ef4444, #f59e0b);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }}
+        
+        .nav-stats {{
+            display: flex;
+            gap: 20px;
+        }}
+        
+        .nav-stat {{
             text-align: center;
         }}
-        .stat-value {{ font-size: 1.8rem; font-weight: bold; color: #fff; }}
-        .stat-label {{ font-size: 0.85rem; color: #9ca3af; }}
         
-        .date-group {{
-            margin-bottom: 35px;
-        }}
-        .date-header {{
-            font-size: 1.1rem;
-            color: #9ca3af;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+        .nav-stat-value {{
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent);
         }}
         
-        .breach-list {{
+        .nav-stat-label {{
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }}
+        
+        .main {{
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }}
+        
+        .sidebar {{
+            width: 260px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            padding: 20px;
+            position: sticky;
+            top: 70px;
+            height: calc(100vh - 70px);
+            overflow-y: auto;
+        }}
+        
+        .filter-section {{
+            margin-bottom: 25px;
+        }}
+        
+        .filter-title {{
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }}
+        
+        .filter-select {{
+            width: 100%;
+            padding: 10px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }}
+        
+        .filter-select:focus {{
+            outline: none;
+            border-color: var(--accent);
+        }}
+        
+        .quick-filters {{
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 8px;
+        }}
+        
+        .quick-btn {{
+            padding: 10px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-dim);
+            cursor: pointer;
+            text-align: left;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }}
+        
+        .quick-btn:hover, .quick-btn.active {{
+            background: var(--accent);
+            border-color: var(--accent);
+            color: white;
+        }}
+        
+        .quick-btn .count {{
+            background: rgba(255,255,255,0.2);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+        }}
+        
+        .content {{
+            flex: 1;
+            padding: 25px;
+        }}
+        
+        .content-header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }}
+        
+        .search-box {{
+            display: flex;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 15px;
+            width: 300px;
+        }}
+        
+        .search-box input {{
+            background: transparent;
+            border: none;
+            color: var(--text);
+            font-size: 0.9rem;
+            width: 100%;
+            margin-left: 10px;
+        }}
+        
+        .search-box input:focus {{
+            outline: none;
+        }}
+        
+        .search-box input::placeholder {{
+            color: var(--text-dim);
+        }}
+        
+        .results-count {{
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }}
+        
+        .breach-grid {{
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 15px;
         }}
         
         .breach-card {{
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: var(--card-bg);
+            border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 18px 20px;
-            transition: all 0.2s ease;
+            padding: 18px;
+            transition: all 0.2s;
+            cursor: pointer;
         }}
+        
         .breach-card:hover {{
-            background: rgba(255,255,255,0.06);
-            border-color: rgba(255,255,255,0.15);
-            transform: translateX(4px);
+            border-color: var(--accent);
+            transform: translateY(-2px);
         }}
         
-        .breach-header {{
+        .breach-card-header {{
             display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }}
-        .company-name {{
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #fff;
-            text-decoration: none;
-        }}
-        .company-name:hover {{
-            color: #60a5fa;
-            text-decoration: underline;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
         }}
         
-        .badge {{
-            font-size: 0.75rem;
+        .company-name {{
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text);
+            text-decoration: none;
+            word-break: break-word;
+        }}
+        
+        .company-name:hover {{
+            color: var(--accent);
+        }}
+        
+        .industry-badge {{
+            font-size: 0.7rem;
             padding: 4px 10px;
             border-radius: 20px;
-            font-weight: 500;
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--accent-hover);
+            white-space: nowrap;
         }}
-        .badge-default {{ background: rgba(255,255,255,0.1); color: #9ca3af; }}
-        .badge-health {{ background: rgba(239,68,68,0.2); color: #fca5a5; }}
-        .badge-financial {{ background: rgba(59,130,246,0.2); color: #93c5fd; }}
-        .badge-gov {{ background: rgba(168,85,247,0.2); color: #d8b4fe; }}
         
-        .breach-details {{
+        .breach-meta {{
             display: flex;
-            gap: 20px;
             flex-wrap: wrap;
-            font-size: 0.9rem;
+            gap: 15px;
+            font-size: 0.8rem;
+            color: var(--text-dim);
         }}
-        .detail {{ color: #9ca3af; }}
-        .detail .label {{ color: #6b7280; }}
         
-        .company-desc {{
+        .meta-item {{
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }}
+        
+        .attacker-tag {{
+            display: inline-block;
+            padding: 3px 10px;
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border-radius: 4px;
+            font-size: 0.75rem;
             margin-top: 10px;
-            font-size: 0.85rem;
-            color: #6b7280;
-            font-style: italic;
         }}
         
-        footer {{
-            text-align: center;
-            margin-top: 50px;
-            color: #4b5563;
-            font-size: 0.85rem;
+        .date-badge {{
+            font-size: 0.75rem;
+            color: var(--text-dim);
         }}
-        footer a {{ color: #60a5fa; text-decoration: none; }}
+        
+        .no-results {{
+            text-align: center;
+            padding: 60px;
+            color: var(--text-dim);
+        }}
+        
+        .no-results-icon {{
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }}
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {{
+            width: 8px;
+        }}
+        
+        ::-webkit-scrollbar-track {{
+            background: var(--bg);
+        }}
+        
+        ::-webkit-scrollbar-thumb {{
+            background: var(--border);
+            border-radius: 4px;
+        }}
+        
+        ::-webkit-scrollbar-thumb:hover {{
+            background: var(--accent);
+        }}
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🚨 Data Breach Alerts</h1>
-            <p class="subtitle">Automated monitoring of ransomware attacks & data breaches</p>
-        </header>
-        
-        <div class="stats">
-            <div class="stat">
-                <div class="stat-value">{total}</div>
-                <div class="stat-label">Breaches Found</div>
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon">⚠️</div>
+            <span>Breach Monitor</span>
+        </div>
+        <div class="nav-stats">
+            <div class="nav-stat">
+                <div class="nav-stat-value" id="totalCount">{len(breaches)}</div>
+                <div class="nav-stat-label">Total</div>
             </div>
-            <div class="stat">
-                <div class="stat-value">{healthcare}</div>
-                <div class="stat-label">🏥 Healthcare</div>
+            <div class="nav-stat">
+                <div class="nav-stat-value">{len(industries)}</div>
+                <div class="nav-stat-label">Industries</div>
             </div>
-            <div class="stat">
-                <div class="stat-value">{financial}</div>
-                <div class="stat-label">🏦 Financial</div>
+            <div class="nav-stat">
+                <div class="nav-stat-value">{len(attackers)}</div>
+                <div class="nav-stat-label">Groups</div>
             </div>
         </div>
+    </nav>
+    
+    <div class="main">
+        <aside class="sidebar">
+            <div class="filter-section">
+                <div class="filter-title">🔍 Search</div>
+                <div class="search-box">
+                    <span>🔎</span>
+                    <input type="text" id="searchInput" placeholder="Search companies...">
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-title">🏭 Industry</div>
+                <select class="filter-select" id="industryFilter">
+                    <option value="">All Industries</option>
+                    {industry_options}
+                </select>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-title">💀 Attacker Group</div>
+                <select class="filter-select" id="attackerFilter">
+                    <option value="">All Attackers</option>
+                    {attacker_options}
+                </select>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-title">📅 Date</div>
+                <select class="filter-select" id="dateFilter">
+                    <option value="">All Dates</option>
+                    {"".join(f'<option value="{d}">{d}</option>' for d in dates)}
+                </select>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-title">⚡ Quick Filters</div>
+                <div class="quick-filters">
+                    <button class="quick-btn" onclick="filterByIndustry('Healthcare')">
+                        🏥 Healthcare <span class="count">{len([b for b in breaches if b.industry == 'Healthcare'])}</span>
+                    </button>
+                    <button class="quick-btn" onclick="filterByIndustry('Financial')">
+                        🏦 Financial <span class="count">{len([b for b in breaches if b.industry == 'Financial'])}</span>
+                    </button>
+                    <button class="quick-btn" onclick="filterByIndustry('Technology')">
+                        💻 Technology <span class="count">{len([b for b in breaches if b.industry == 'Technology'])}</span>
+                    </button>
+                    <button class="quick-btn" onclick="filterByIndustry('Government')">
+                        🏛️ Government <span class="count">{len([b for b in breaches if b.industry == 'Government'])}</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <button class="quick-btn" onclick="clearFilters()" style="width:100%; justify-content:center;">
+                    ✖️ Clear All Filters
+                </button>
+            </div>
+        </aside>
         
-        {date_blocks}
-        
-        <footer>
-            <p>Sources: ransomware.live | Updated: {datetime.now().strftime('%Y-%m-%d %H:%M')}</p>
-            <p><a href="https://www.ransomware.live" target="_blank">View Source</a></p>
-        </footer>
+        <main class="content">
+            <div class="content-header">
+                <div class="results-count">Showing <span id="showingCount">{len(breaches)}</span> breaches</div>
+            </div>
+            
+            <div class="breach-grid" id="breachGrid">
+                <!-- Cards rendered by JavaScript -->
+            </div>
+            
+            <div class="no-results" id="noResults" style="display:none;">
+                <div class="no-results-icon">🔍</div>
+                <div>No breaches match your filters</div>
+            </div>
+        </main>
     </div>
+    
+    <script>
+        const breaches = {breaches_json};
+        
+        const industryIcons = {json.dumps(industry_icons)};
+        
+        function renderBreaches(data) {{
+            const grid = document.getElementById('breachGrid');
+            const count = document.getElementById('showingCount');
+            const noResults = document.getElementById('noResults');
+            
+            count.textContent = data.length;
+            
+            if (data.length === 0) {{
+                grid.innerHTML = '';
+                noResults.style.display = 'block';
+                return;
+            }}
+            
+            noResults.style.display = 'none';
+            grid.innerHTML = data.map(b => `
+                <div class="breach-card">
+                    <div class="breach-card-header">
+                        <a href="${{b.url}}" target="_blank" class="company-name">${{b.company}}</a>
+                        ${{b.industry ? `<span class="industry-badge">${{industryIcons[b.industry] || ''}} ${{b.industry}}</span>` : ''}}
+                    </div>
+                    <div class="breach-meta">
+                        <div class="meta-item">
+                            <span>📅</span> ${{b.date}}
+                        </div>
+                        <div class="meta-item">
+                            <span>📍</span> ${{b.location}}
+                        </div>
+                    </div>
+                    ${{b.attacker !== 'Unknown' ? `<span class="attacker-tag">💀 ${{b.attacker}}</span>` : ''}}
+                </div>
+            `).join('');
+        }}
+        
+        function filter() {{
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const industry = document.getElementById('industryFilter').value;
+            const attacker = document.getElementById('attackerFilter').value;
+            const date = document.getElementById('dateFilter').value;
+            
+            const filtered = breaches.filter(b => {{
+                const matchSearch = !search || b.company.toLowerCase().includes(search) || b.attacker.toLowerCase().includes(search);
+                const matchIndustry = !industry || b.industry === industry;
+                const matchAttacker = !attacker || b.attacker === attacker;
+                const matchDate = !date || b.date === date;
+                return matchSearch && matchIndustry && matchAttacker && matchDate;
+            }});
+            
+            renderBreaches(filtered);
+        }}
+        
+        function filterByIndustry(ind) {{
+            document.getElementById('industryFilter').value = ind;
+            filter();
+        }}
+        
+        function clearFilters() {{
+            document.getElementById('searchInput').value = '';
+            document.getElementById('industryFilter').value = '';
+            document.getElementById('attackerFilter').value = '';
+            document.getElementById('dateFilter').value = '';
+            filter();
+        }}
+        
+        document.getElementById('searchInput').addEventListener('input', filter);
+        document.getElementById('industryFilter').addEventListener('change', filter);
+        document.getElementById('attackerFilter').addEventListener('change', filter);
+        document.getElementById('dateFilter').addEventListener('change', filter);
+        
+        // Initial render
+        renderBreaches(breaches);
+    </script>
 </body>
 </html>'''
     return html
@@ -427,12 +687,12 @@ def main():
     
     breaches = get_ransomware_live_victims(days_back=7)
     
-    # Save HTML
-    html = generate_html_view(breaches)
+    # Save HTML dashboard
+    html = generate_html_dashboard(breaches)
     with open(HTML_PATH, 'w') as f:
         f.write(html)
     
-    # Save simple JSON
+    # Save JSON
     feed = {
         "generated_at": datetime.now().isoformat(),
         "total_breaches": len(breaches),
@@ -452,8 +712,8 @@ def main():
         json.dump(feed, f, indent=2)
     
     print(f"\n[*] Found {len(breaches)} breaches")
-    print(f"[*] Saved to: {HTML_PATH}")
-    print(f"[*] Saved to: {JSON_PATH}")
+    print(f"[*] Saved: {HTML_PATH}")
+    print(f"[*] Saved: {JSON_PATH}")
 
 
 if __name__ == "__main__":

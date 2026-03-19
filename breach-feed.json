@@ -1,166 +1,206 @@
 {
-  "generated_at": "2026-03-19T09:53:15.254854",
-  "total_breaches": 20,
+  "generated_at": "2026-03-19T10:30:22.820769",
+  "total_breaches": 25,
   "breaches": [
     {
-      "company": "Gsolutionz",
+      "company": "Who is VahidOnline?",
       "date": "2026-03-17",
-      "attacker": "Play",
-      "location": "\ud83c\udf0d",
+      "attacker": "Handala",
+      "location": "Unknown",
       "industry": "",
-      "url": "https://www.ransomware.live/id/R3NvbHV0aW9uekBwbGF5"
+      "url": "https://www.ransomware.live/id/V2hvIGlzIFZhaGlkT25saW5lP0BoYW5kYWxh"
+    },
+    {
+      "company": "PC SOFT FRANCE",
+      "date": "2026-03-19",
+      "attacker": "Coinbasecartel",
+      "location": "Unknown",
+      "industry": "",
+      "url": "https://www.ransomware.live/id/UEMgU09GVCBGUkFOQ0VAY29pbmJhc2VjYXJ0ZWw="
+    },
+    {
+      "company": "Flexform",
+      "date": "2026-03-18",
+      "attacker": "Dragonforce",
+      "location": "Unknown",
+      "industry": "",
+      "url": "https://www.ransomware.live/id/RmxleGZvcm1AZHJhZ29uZm9yY2U="
+    },
+    {
+      "company": "L H Lacy",
+      "date": "2026-03-18",
+      "attacker": "Qilin",
+      "location": "Unknown",
+      "industry": "",
+      "url": "https://www.ransomware.live/id/TCBIIExhY3lAcWlsaW4="
+    },
+    {
+      "company": "Delta Manufacturing",
+      "date": "2026-03-18",
+      "attacker": "Interlock",
+      "location": "Unknown",
+      "industry": "Manufacturing",
+      "url": "https://www.ransomware.live/id/RGVsdGEgTWFudWZhY3R1cmluZ0BpbnRlcmxvY2s="
+    },
+    {
+      "company": "Construction Equipment Parts",
+      "date": "2026-03-18",
+      "attacker": "Dragonforce",
+      "location": "Unknown",
+      "industry": "Manufacturing",
+      "url": "https://www.ransomware.live/id/Q29uc3RydWN0aW9uIEVxdWlwbWVudCBQYXJ0c0BkcmFnb25mb3JjZQ=="
+    },
+    {
+      "company": "**l** ****** ****** C***",
+      "date": "2026-03-17",
+      "attacker": "Insomnia",
+      "location": "Unknown",
+      "industry": "",
+      "url": "https://www.ransomware.live/id/KipsKiogKioqKioqICoqKioqKiBDKioqQGluc29tbmlh"
+    },
+    {
+      "company": "Evaluate a Norstella company",
+      "date": "2026-03-15",
+      "attacker": "Everest",
+      "location": "Unknown",
+      "industry": "",
+      "url": "https://www.ransomware.live/id/RXZhbHVhdGUgYSBOb3JzdGVsbGEgY29tcGFueUBldmVyZXN0"
+    },
+    {
+      "company": "Folet & Rivoire",
+      "date": "2026-03-16",
+      "attacker": "Kairos",
+      "location": "Unknown",
+      "industry": "",
+      "url": "https://www.ransomware.live/id/Rm9sZXQgJiBSaXZvaXJlQGthaXJvcw=="
+    },
+    {
+      "company": "Canal Capital",
+      "date": "2026-03-16",
+      "attacker": "Thegentlemen",
+      "location": "Unknown",
+      "industry": "Financial",
+      "url": "https://www.ransomware.live/id/Q2FuYWwgQ2FwaXRhbEB0aGVnZW50bGVtZW4="
+    },
+    {
+      "company": "tiefenbachergroup.com",
+      "date": "2026-03-17",
+      "attacker": "Safepay",
+      "location": "Unknown",
+      "industry": "",
+      "url": "https://www.ransomware.live/id/dGllZmVuYmFjaGVyZ3JvdXAuY29tQHNhZmVwYXk="
+    },
+    {
+      "company": "Salag",
+      "date": "2026-03-15",
+      "attacker": "Qilin",
+      "location": "Unknown",
+      "industry": "",
+      "url": "https://www.ransomware.live/id/U2FsYWdAcWlsaW4="
+    },
+    {
+      "company": "Interpack Northwest",
+      "date": "2026-03-18",
+      "attacker": "Sinobi",
+      "location": "Unknown",
+      "industry": "",
+      "url": "https://www.ransomware.live/id/SW50ZXJwYWNrIE5vcnRod2VzdEBzaW5vYmk="
     },
     {
       "company": "Vexin Normand",
       "date": "2026-03-18",
       "attacker": "Thegentlemen",
-      "location": "\ud83c\udf0d",
+      "location": "Unknown",
       "industry": "",
       "url": "https://www.ransomware.live/id/VmV4aW4gTm9ybWFuZEB0aGVnZW50bGVtZW4="
     },
     {
-      "company": "BTX Global Logistics",
-      "date": "2026-03-18",
-      "attacker": "Qilin",
-      "location": "\ud83c\udf0d",
-      "industry": "\u2708\ufe0f Transportation",
-      "url": "https://www.ransomware.live/id/QlRYIEdsb2JhbCBMb2dpc3RpY3NAcWlsaW4="
-    },
-    {
-      "company": "Bonheure",
-      "date": "2026-03-19",
-      "attacker": "Spacebears",
-      "location": "\ud83c\udf0d",
-      "industry": "",
-      "url": "https://www.ransomware.live/id/Qm9uaGV1cmVAc3BhY2ViZWFycw=="
-    },
-    {
-      "company": "bestgraphics.net",
+      "company": "Gsolutionz",
       "date": "2026-03-17",
-      "attacker": "Dragonforce",
-      "location": "\ud83c\udf0d",
+      "attacker": "Play",
+      "location": "Unknown",
       "industry": "",
-      "url": "https://www.ransomware.live/id/YmVzdGdyYXBoaWNzLm5ldEBkcmFnb25mb3JjZQ=="
+      "url": "https://www.ransomware.live/id/R3NvbHV0aW9uekBwbGF5"
     },
     {
-      "company": "2LG Prod",
+      "company": "HARTMANN BAU",
       "date": "2026-03-18",
+      "attacker": "Dragonforce",
+      "location": "Unknown",
+      "industry": "",
+      "url": "https://www.ransomware.live/id/SEFSVE1BTk4gQkFVQGRyYWdvbmZvcmNl"
+    },
+    {
+      "company": "Pilana Group, TRITCON",
+      "date": "2026-03-16",
+      "attacker": "Akira",
+      "location": "Unknown",
+      "industry": "",
+      "url": "https://www.ransomware.live/id/UGlsYW5hIEdyb3VwLCBUUklUQ09OQGFraXJh"
+    },
+    {
+      "company": "Steve Quick Jeweler",
+      "date": "2026-03-16",
+      "attacker": "Akira",
+      "location": "Unknown",
+      "industry": "",
+      "url": "https://www.ransomware.live/id/U3RldmUgUXVpY2sgSmV3ZWxlckBha2lyYQ=="
+    },
+    {
+      "company": "Executive Aviation",
+      "date": "2026-03-15",
+      "attacker": "Play",
+      "location": "Unknown",
+      "industry": "Transportation",
+      "url": "https://www.ransomware.live/id/RXhlY3V0aXZlIEF2aWF0aW9uQHBsYXk="
+    },
+    {
+      "company": "BCN Medical",
+      "date": "2026-03-16",
       "attacker": "Thegentlemen",
-      "location": "\ud83c\udf0d",
-      "industry": "",
-      "url": "https://www.ransomware.live/id/MkxHIFByb2RAdGhlZ2VudGxlbWVu"
+      "location": "Unknown",
+      "industry": "Healthcare",
+      "url": "https://www.ransomware.live/id/QkNOIE1lZGljYWxAdGhlZ2VudGxlbWVu"
     },
     {
-      "company": "Who is VahidOnline?",
-      "date": "2026-03-17",
-      "attacker": "Handala",
-      "location": "\ud83c\udf0d",
-      "industry": "",
-      "url": "https://www.ransomware.live/id/V2hvIGlzIFZhaGlkT25saW5lP0BoYW5kYWxh"
+      "company": "Royal Bahrain Hospital",
+      "date": "2026-03-15",
+      "attacker": "Payload",
+      "location": "Unknown",
+      "industry": "Healthcare",
+      "url": "https://www.ransomware.live/id/Um95YWwgQmFocmFpbiBIb3NwaXRhbEBwYXlsb2Fk"
     },
     {
-      "company": "Von Weise Associates",
-      "date": "2026-03-16",
-      "attacker": "Qilin",
-      "location": "\ud83c\udf0d",
-      "industry": "",
-      "url": "https://www.ransomware.live/id/Vm9uIFdlaXNlIEFzc29jaWF0ZXNAcWlsaW4="
-    },
-    {
-      "company": "Shock for Israeli Intelligence: 100,000 Classified Emails of Mossad\u2019s Ex-Deputy Director S...",
-      "date": "2026-03-16",
-      "attacker": "Handala",
-      "location": "\ud83c\udf0d",
-      "industry": "",
-      "url": "https://www.ransomware.live/id/U2hvY2sgZm9yIElzcmFlbGkgSW50ZWxsaWdlbmNlOiAxMDAsMDAwIENsYXNzaWZpZWQgRW1haWxzIG9mIE1vc3NhZOKAmXMgRXgtRGVwdXR5IERpcmVjdG9yIFMuLi5AaGFuZGFsYQ=="
-    },
-    {
-      "company": "Mingat Location",
-      "date": "2026-03-16",
-      "attacker": "Akira",
-      "location": "\ud83c\udf0d",
-      "industry": "",
-      "url": "https://www.ransomware.live/id/TWluZ2F0IExvY2F0aW9uQGFraXJh"
-    },
-    {
-      "company": "gasteiger.design",
+      "company": "Wood Smith Henning & Berman LLP",
       "date": "2026-03-18",
-      "attacker": "Dragonforce",
-      "location": "\ud83c\udf0d",
-      "industry": "\u26a1 Energy",
-      "url": "https://www.ransomware.live/id/Z2FzdGVpZ2VyLmRlc2lnbkBkcmFnb25mb3JjZQ=="
-    },
-    {
-      "company": "Vahid Offline Members",
-      "date": "2026-03-17",
-      "attacker": "Handala",
-      "location": "\ud83c\udf0d",
+      "attacker": "Silentransomgroup",
+      "location": "Unknown",
       "industry": "",
-      "url": "https://www.ransomware.live/id/VmFoaWQgT2ZmbGluZSBNZW1iZXJzQGhhbmRhbGE="
+      "url": "https://www.ransomware.live/id/V29vZCBTbWl0aCBIZW5uaW5nICYgQmVybWFuIExMUEBTaWxlbnRSYW5zb21Hcm91cA=="
     },
     {
-      "company": "***** ***** & ******",
+      "company": "Teco",
       "date": "2026-03-17",
-      "attacker": "Genesis",
-      "location": "\ud83c\udf0d",
-      "industry": "",
-      "url": "https://www.ransomware.live/id/KioqKiogKioqKiogJiAqKioqKipAZ2VuZXNpcw=="
-    },
-    {
-      "company": "palram.com",
-      "date": "2026-03-17",
-      "attacker": "Killsec",
-      "location": "\ud83c\udf0d",
-      "industry": "",
-      "url": "https://www.ransomware.live/id/cGFscmFtLmNvbUBraWxsc2Vj"
-    },
-    {
-      "company": "Summa Energy",
-      "date": "2026-03-18",
       "attacker": "Sinobi",
-      "location": "\ud83c\udf0d",
-      "industry": "\u26a1 Energy",
-      "url": "https://www.ransomware.live/id/U3VtbWEgRW5lcmd5QHNpbm9iaQ=="
-    },
-    {
-      "company": "Shwapno",
-      "date": "2026-03-17",
-      "attacker": "Qilin",
-      "location": "\ud83c\udf0d",
+      "location": "Unknown",
       "industry": "",
-      "url": "https://www.ransomware.live/id/U2h3YXBub0BxaWxpbg=="
-    },
-    {
-      "company": "Texollini",
-      "date": "2026-03-18",
-      "attacker": "Akira",
-      "location": "\ud83c\udf0d",
-      "industry": "",
-      "url": "https://www.ransomware.live/id/VGV4b2xsaW5pQGFraXJh"
+      "url": "https://www.ransomware.live/id/VGVjb0BzaW5vYmk="
     },
     {
       "company": "Chase Asia",
       "date": "2026-03-16",
       "attacker": "Thegentlemen",
-      "location": "\ud83c\udf0d",
+      "location": "Unknown",
       "industry": "",
       "url": "https://www.ransomware.live/id/Q2hhc2UgQXNpYUB0aGVnZW50bGVtZW4="
     },
     {
-      "company": "Excellentiam",
-      "date": "2026-03-18",
+      "company": "Centro de Especialidades",
+      "date": "2026-03-16",
       "attacker": "Thegentlemen",
-      "location": "\ud83c\udf0d",
+      "location": "Unknown",
       "industry": "",
-      "url": "https://www.ransomware.live/id/RXhjZWxsZW50aWFtQHRoZWdlbnRsZW1lbg=="
-    },
-    {
-      "company": "Valley Family Health Care",
-      "date": "2026-03-18",
-      "attacker": "Insomnia",
-      "location": "\ud83c\udf0d",
-      "industry": "\ud83c\udfe5 Healthcare",
-      "url": "https://www.ransomware.live/id/VmFsbGV5IEZhbWlseSBIZWFsdGggQ2FyZUBpbnNvbW5pYQ=="
+      "url": "https://www.ransomware.live/id/Q2VudHJvIGRlIEVzcGVjaWFsaWRhZGVzQHRoZWdlbnRsZW1lbg=="
     }
   ]
 }
