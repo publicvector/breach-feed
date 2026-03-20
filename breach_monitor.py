@@ -84,11 +84,14 @@ def get_victim_details(url: str) -> dict:
                     details['ransomware_group'] = group
                     break
         
+        # Extract country - from /map/XX links
         for link in soup.find_all('a', href=True):
-            if '/map/' in link.get('href', ''):
-                country = link.get_text(strip=True)
-                if country and len(country) <= 3:
-                    details['location'] = country
+            href = link.get('href', '')
+            if '/map/' in href:
+                # Get the text content of the link (the country code)
+                country_text = link.get_text(strip=True)
+                if country_text and len(country_text) == 2:
+                    details['location'] = country_text
                     break
         
         dates = re.findall(r'(\d{4}-\d{2}-\d{2})', text)
@@ -108,6 +111,36 @@ def get_ransomware_live_victims(days_back: int = 3) -> list[BreachReport]:
         print("[*] Fetching ransomware.live...")
         resp = requests.get("https://www.ransomware.live/", headers=HEADERS, timeout=60)
         soup = BeautifulSoup(resp.text, 'html.parser')
+        
+        # Extract country from main page - look for /map/ links that are siblings of /id/ links
+        victim_countries = {}
+        
+        all_links = soup.find_all('a', href=True)
+        
+        for i, link in enumerate(all_links):
+            href = link.get('href', '')
+            
+            if '/id/' in href:
+                clean = href.split('#')[0]
+                full_url = f"https://www.ransomware.live{clean}"
+                
+                # Look for a /map/ link in the next few siblings
+                next_elem = link.find_next_sibling()
+                count = 0
+                while next_elem and count < 5:
+                    if next_elem.name == 'a' and '/map/' in next_elem.get('href', ''):
+                        # Try to get country from img alt first, then text
+                        img = next_elem.find('img')
+                        country = None
+                        if img:
+                            country = img.get('alt', '').strip()
+                        if not country:
+                            country = next_elem.get_text(strip=True)
+                        if country and len(country) == 2:
+                            victim_countries[full_url] = country
+                            break
+                    next_elem = next_elem.find_next_sibling()
+                    count += 1
         
         for link in soup.find_all('a', href=True):
             if '/id/' in link.get('href', ''):
@@ -135,9 +168,12 @@ def get_ransomware_live_victims(days_back: int = 3) -> list[BreachReport]:
             
             attack_date = details.get('attack_date', datetime.now().strftime('%Y-%m-%d'))
             
+            # Use country from main page if available, otherwise from detail page
+            location = details.get('location') or victim_countries.get(victim_url) or 'Unknown'
+            
             victims.append(BreachReport(
                 company_name=company_name,
-                location=details.get('location', 'Unknown'),
+                location=location,
                 victims=details.get('victims', '—'),
                 data_at_risk="Data exfiltrated",
                 attack_date=attack_date,
@@ -162,6 +198,7 @@ def generate_html_dashboard(breaches: list[BreachReport]) -> str:
     industries = sorted(set(b.industry for b in breaches if b.industry))
     attackers = sorted(set(b.ransomware_group for b in breaches if b.ransomware_group != 'Unknown'))
     dates = sorted(set(b.attack_date for b in breaches), reverse=True)
+    countries = sorted(set(b.location for b in breaches if b.location and b.location != 'Unknown'))
     
     # Industry icon mapping
     industry_icons = {
@@ -179,6 +216,7 @@ def generate_html_dashboard(breaches: list[BreachReport]) -> str:
     # Create filter options
     industry_options = "".join(f'<option value="{i}">{industry_icons.get(i, "")} {i}</option>' for i in industries)
     attacker_options = "".join(f'<option value="{a}">{a}</option>' for a in attackers)
+    country_options = "".join(f'<option value="{c}">{c}</option>' for c in countries)
     
     # Generate breach cards as JSON for client-side filtering
     breaches_json = json.dumps([
@@ -561,6 +599,14 @@ def generate_html_dashboard(breaches: list[BreachReport]) -> str:
             </div>
             
             <div class="filter-section">
+                <div class="filter-title">🌍 Country</div>
+                <select class="filter-select" id="countryFilter">
+                    <option value="">All Countries</option>
+                    {country_options}
+                </select>
+            </div>
+            
+            <div class="filter-section">
                 <div class="filter-title">⚡ Quick Filters</div>
                 <div class="quick-filters">
                     <button class="quick-btn" onclick="filterByIndustry('Healthcare')">
@@ -644,13 +690,15 @@ def generate_html_dashboard(breaches: list[BreachReport]) -> str:
             const industry = document.getElementById('industryFilter').value;
             const attacker = document.getElementById('attackerFilter').value;
             const date = document.getElementById('dateFilter').value;
+            const country = document.getElementById('countryFilter').value;
             
             const filtered = breaches.filter(b => {{
                 const matchSearch = !search || b.company.toLowerCase().includes(search) || b.attacker.toLowerCase().includes(search);
                 const matchIndustry = !industry || b.industry === industry;
                 const matchAttacker = !attacker || b.attacker === attacker;
                 const matchDate = !date || b.date === date;
-                return matchSearch && matchIndustry && matchAttacker && matchDate;
+                const matchCountry = !country || b.location === country;
+                return matchSearch && matchIndustry && matchAttacker && matchDate && matchCountry;
             }});
             
             renderBreaches(filtered);
@@ -666,6 +714,7 @@ def generate_html_dashboard(breaches: list[BreachReport]) -> str:
             document.getElementById('industryFilter').value = '';
             document.getElementById('attackerFilter').value = '';
             document.getElementById('dateFilter').value = '';
+            document.getElementById('countryFilter').value = '';
             filter();
         }}
         
@@ -673,6 +722,7 @@ def generate_html_dashboard(breaches: list[BreachReport]) -> str:
         document.getElementById('industryFilter').addEventListener('change', filter);
         document.getElementById('attackerFilter').addEventListener('change', filter);
         document.getElementById('dateFilter').addEventListener('change', filter);
+        document.getElementById('countryFilter').addEventListener('change', filter);
         
         // Initial render
         renderBreaches(breaches);
